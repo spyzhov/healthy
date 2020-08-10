@@ -1,0 +1,78 @@
+version: 1
+name: example
+groups:
+  - name: Simple
+    validate:
+      - name: 'Simple: fail'
+        type: simple
+        args:
+          - status: error
+            message: Simple error
+      - name: 'Simple: warning'
+        type: simple
+        args:
+          - status: warning
+            message: Simple warning
+      - name: 'Simple: success'
+        type: simple
+        args:
+          - status: success
+            message: Simple success
+      - name: 'Simple: wait for success'
+        type: simple
+        args:
+          - status: success
+            message: Simple success after 1 second
+            sleep: 1s
+  - name: Available HTTP resources
+    validate:
+      - name: google.com
+        type: http
+        args:
+          - method: GET
+            url: 'https://google.com'
+            require:
+              status:
+                eq: 200
+      - name: graph.facebook.com
+        type: http
+        args:
+          - method: GET
+            url: 'https://graph.facebook.com'
+            timeout: 1s
+      - name: api.github.com
+        type: http
+        args:
+          - method: GET
+            url: 'https://api.github.com'
+            timeout: 1s
+      - name: "healthy repo exists in GitHub"
+        type: http
+        args:
+          - method: GET
+            url: 'https://api.github.com/repos/spyzhov/healthy'
+            timeout: 1s
+            require:
+              status:
+                eq: 200
+      - name: "healthy repo exists in Docker"
+        type: http
+        args:
+          - method: GET
+            url: 'https://hub.docker.com/r/spyzhov/healthy'
+            timeout: 3s
+            require:
+              status:
+                eq: 200
+              content:
+                html:
+                  - xpath: //title
+                    not_match: ['Page Not Found - Docker Hub']
+
+frontend:
+  script:
+    content: ~
+    files: []
+  style:
+    content: ~
+    files: [] # Example: ['https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/slate/bootstrap.min.css']

@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+
+  http:
+    container_name: healthy_http
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    environment:
+      LOG_LEVEL: info
+      PORT: 80
+      MANAGEMENT_PORT: 3280
+      CONFIG_FILE: example.yaml
+#      CONFIG_YAML: |
+#        version: 1
+#        name: Simple example
+#        groups:
+#          - name: Simple
+#            validate:
+#              - name: Success
+#                type: simple
+#                args:
+#                  - status: success
+    ports:
+      - 80:80
+#      - 3280:3280
