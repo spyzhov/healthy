@@ -1,9 +1,9 @@
-package executor
+package internal
 
 type HttpArgsRequireStatus struct {
-	RequireInteger
+	RequireNumeric
 }
 
 func (a *HttpArgsRequireStatus) Match(status int) error {
-	return a.RequireInteger.Match("status", status)
+	return a.RequireNumeric.Match("status", float64(status))
 }

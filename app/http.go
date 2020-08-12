@@ -32,7 +32,6 @@ func (app *Application) RunHttp(handler *http.ServeMux, port int, name string) e
 		<-app.Ctx.Done()
 
 		app.Logger.Debug("http stops", zap.String("name", name))
-		return
 	}()
 	return nil
 }

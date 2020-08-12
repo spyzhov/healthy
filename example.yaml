@@ -59,15 +59,13 @@ groups:
         type: http
         args:
           - method: GET
-            url: 'https://hub.docker.com/r/spyzhov/healthy'
+            url: 'https://hub.docker.com/v2/repositories/spyzhov/healthy/'
             timeout: 3s
             require:
               status:
                 eq: 200
               content:
-                html:
-                  - xpath: //title
-                    not_match: ['Page Not Found - Docker Hub']
+                type: JSON
 
 frontend:
   script:

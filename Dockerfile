@@ -7,10 +7,6 @@ RUN zip -r -0 /zoneinfo.zip .
 
 FROM golang:1.14-stretch AS builder
 
-ARG APP_VERSION=Unknown
-ARG APP_COMMIT=Unknown
-ARG APP_CREATED=Unknown
-
 # Services:
 RUN apt-get update && apt-get install -y openssh-client
 RUN GO111MODULE=off go get -u github.com/gobuffalo/packr/v2/packr2
@@ -28,17 +24,8 @@ RUN go mod download
 
 COPY . .
 
-RUN go mod vendor && \
-    packr2 && \
-	go build \
-	    -mod=vendor \
-	    -ldflags "\
-	        -w \
-	        -X github.com/spyzhov/healthy/app.Version=${APP_VERSION} \
-	        -X github.com/spyzhov/healthy/app.Commit=${APP_COMMIT} \
-	        -X github.com/spyzhov/healthy/app.Created=${APP_CREATED} \
-	    " \
-	    -o /go/bin/healthy .
+RUN go mod vendor && packr2
+RUN ["/bin/bash", "build.sh"]
 
 FROM debian:9-slim
 # environment

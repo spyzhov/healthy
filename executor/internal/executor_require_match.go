@@ -1,4 +1,4 @@
-package executor
+package internal
 
 type RequireMatch struct {
 	Regexp    RequireFieldMatch    `json:"match"`

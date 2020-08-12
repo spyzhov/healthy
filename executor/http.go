@@ -1,37 +1,30 @@
 package executor
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
-	"strings"
 	"time"
 
+	. "github.com/spyzhov/healthy/executor/internal"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )
 
 type HttpArgs struct {
 	// region Request
-	Method    string              `json:"method"`
-	Url       string              `json:"url"`
-	Payload   *string             `json:"payload"`
-	PostForm  map[string][]string `json:"post_form"`
-	Headers   map[string]string   `json:"headers"`
-	Timeout   Duration            `json:"timeout"`
-	Redirect  bool                `json:"redirect"`
-	BasicAuth *struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	} `json:"basic_auth"`
+	Method    string             `json:"method"`
+	Url       string             `json:"url"`
+	Payload   *string            `json:"payload"`
+	Form      HttpArgsForm       `json:"form"`
+	Headers   map[string]string  `json:"headers"`
+	Timeout   Duration           `json:"timeout"`
+	Redirect  bool               `json:"redirect"`
+	BasicAuth *HttpArgsBasicAuth `json:"basic_auth"`
 	// endregion
 	// region Response
-	Require struct {
-		Status  *HttpArgsRequireStatus  `json:"status"`
-		Content *HttpArgsRequireContent `json:"content"`
-		Header  *HttpArgsRequireHeader  `json:"header"`
-	}
+	Require HttArgsRequire `json:"require"`
 	// endregion
 }
 
@@ -57,18 +50,16 @@ func (e *Executor) Http(args *HttpArgs) (step.Function, error) {
 	}
 	return func() (*step.Result, error) {
 		// region Request
-		request, err := http.NewRequest(args.method(), args.Url, args.body())
+		contentType, body, err := args.body()
 		if err != nil {
 			return nil, fmt.Errorf("http: %w", err)
 		}
-		for key, values := range args.PostForm {
-			for i, value := range values {
-				if i == 0 {
-					request.Header.Set(key, value)
-				} else {
-					request.Header.Add(key, value)
-				}
-			}
+		request, err := http.NewRequest(args.method(), args.Url, body)
+		if err != nil {
+			return nil, fmt.Errorf("http: %w", err)
+		}
+		if contentType != "" {
+			request.Header.Add("Content-Type", contentType)
 		}
 		for key, value := range args.Headers {
 			request.Header.Set(key, value)
@@ -78,32 +69,16 @@ func (e *Executor) Http(args *HttpArgs) (step.Function, error) {
 		}
 		// endregion
 		// region Response
-		response, err := client(args.Timeout.Duration).Do(request.WithContext(e.ctx))
+		var response *http.Response
+		response, err = client(args.Timeout.Duration).Do(request.WithContext(e.ctx))
 		if err != nil {
 			return nil, fmt.Errorf("http: %w", err)
 		}
 		defer safe.Close(response.Body, "http:response.body")
 		// endregion
 		// region Match
-		if args.Require.Status != nil {
-			err = args.Require.Status.Match(response.StatusCode)
-			if err != nil {
-				return nil, fmt.Errorf("http: %w", err)
-			}
-		}
-		if args.Require.Header != nil {
-			err = args.Require.Header.Match(response.Header)
-			if err != nil {
-				return nil, fmt.Errorf("http: %w", err)
-			}
-		}
-		if args.Require.Content != nil {
-			var content []byte
-			content, err = ioutil.ReadAll(response.Body)
-			err = args.Require.Content.Match(content)
-			if err != nil {
-				return nil, fmt.Errorf("http: %w", err)
-			}
+		if err = args.Require.Match(response); err != nil {
+			return nil, fmt.Errorf("http: %w", err)
 		}
 		// endregion
 		return step.NewResultSuccess("OK"), nil
@@ -114,10 +89,14 @@ func (a *HttpArgs) Validate() (err error) {
 	if err = a.Timeout.Validate(); err != nil {
 		return err
 	}
-	if a.Require.Content != nil {
-		if err = a.Require.Content.Validate(); err != nil {
-			return safe.Wrap(err, "require.content")
-		}
+	if err = a.Form.Validate(); err != nil {
+		return err
+	}
+	if err = a.Require.Validate(); err != nil {
+		return err
+	}
+	if a.Payload != nil && (len(a.Form.Files)+len(a.Form.Values) != 0) {
+		return fmt.Errorf("body: http.payload and http.form set in the same time")
 	}
 	return
 }
@@ -129,9 +108,18 @@ func (a *HttpArgs) method() string {
 	return a.Method
 }
 
-func (a *HttpArgs) body() io.Reader {
-	if a.Payload == nil {
-		return nil
+func (a *HttpArgs) body() (contentType string, r io.Reader, err error) {
+	var b bytes.Buffer
+	if a.Payload != nil {
+		_, err = b.WriteString(*a.Payload)
+		if err != nil {
+			return "", nil, fmt.Errorf("write buffer: %w", err)
+		}
+	} else {
+		contentType, err = a.Form.SubmitForm(&b)
+		if err != nil {
+			return "", nil, err
+		}
 	}
-	return strings.NewReader(*a.Payload)
+	return contentType, &b, err
 }

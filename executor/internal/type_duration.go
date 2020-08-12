@@ -1,19 +1,10 @@
-package executor
+package internal
 
 import (
 	"encoding/json"
 	"fmt"
 	"time"
 )
-
-func intInSlice(value int, slice []int) bool {
-	for _, i := range slice {
-		if i == value {
-			return true
-		}
-	}
-	return false
-}
 
 type Duration struct {
 	time.Duration
