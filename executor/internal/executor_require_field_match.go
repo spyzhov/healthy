@@ -1,4 +1,4 @@
-package executor
+package internal
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ func (match RequireFieldMatch) Validate() error {
 func (match RequireFieldMatch) Match(name string, input []byte) error {
 	for _, value := range match {
 		if !regexp.MustCompile(value).Match(input) {
-			return fmt.Errorf("%s: value not MATCH `%s`", name, value)
+			return fmt.Errorf("%s: value is not match `%s`", name, value)
 		}
 	}
 	return nil
@@ -28,7 +28,7 @@ func (match RequireFieldMatch) Match(name string, input []byte) error {
 func (match RequireFieldMatch) MatchStrings(name string, input []string) error {
 	for _, value := range match {
 		if !match.any(regexp.MustCompile(value), input) {
-			return fmt.Errorf("%s: value not MATCH `%s`", name, value)
+			return fmt.Errorf("%s: value is not match `%s`", name, value)
 		}
 	}
 	return nil

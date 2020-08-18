@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	. "github.com/spyzhov/healthy/executor/internal"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )
@@ -16,9 +17,6 @@ type SimpleArgs struct {
 
 // Simple will just return value from args
 func (e *Executor) Simple(args *SimpleArgs) (step.Function, error) {
-	if safe.IsNil(args) {
-		return nil, fmt.Errorf("arguments should be set: `status` and `message`")
-	}
 	if err := args.Validate(); err != nil {
 		return nil, safe.Wrap(err, "simple")
 	}
@@ -35,6 +33,7 @@ func (e *Executor) Simple(args *SimpleArgs) (step.Function, error) {
 	}, nil
 }
 
+// Validate is a wrapper to Validate all internal attributes
 func (a *SimpleArgs) Validate() (err error) {
 	if safe.IsNil(a) {
 		return fmt.Errorf("arguments should be set: `status` and `message`")

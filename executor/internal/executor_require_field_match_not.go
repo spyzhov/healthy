@@ -1,4 +1,4 @@
-package executor
+package internal
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func (match RequireFieldMatchNot) Validate() error {
 
 func (match RequireFieldMatchNot) Match(name string, input []byte) error {
 	for _, value := range match {
-		if !regexp.MustCompile(value).Match(input) {
+		if regexp.MustCompile(value).Match(input) {
 			return fmt.Errorf("%s: value not NOT_MATCH `%s`", name, value)
 		}
 	}
@@ -27,7 +27,7 @@ func (match RequireFieldMatchNot) Match(name string, input []byte) error {
 
 func (match RequireFieldMatchNot) MatchStrings(name string, input []string) error {
 	for _, value := range match {
-		if !match.any(regexp.MustCompile(value), input) {
+		if match.any(regexp.MustCompile(value), input) {
 			return fmt.Errorf("%s: value not NOT_MATCH `%s`", name, value)
 		}
 	}

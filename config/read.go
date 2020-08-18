@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/spyzhov/healthy/helper"
 	"github.com/spyzhov/safe"
 	"gopkg.in/yaml.v2"
 )
@@ -32,20 +33,7 @@ func NewConfig(content []byte) (*Config, error) {
 }
 
 func intVersion(version interface{}) int {
-	switch version.(type) {
-	case int:
-		return version.(int)
-	case int8:
-		return int(version.(int8))
-	case int16:
-		return int(version.(int16))
-	case int32:
-		return int(version.(int32))
-	case int64:
-		return int(version.(int64))
-	default:
-		return -1
-	}
+	return helper.Int(version, -1)
 }
 
 func read(values interface{}, config interface{}) (err error) {

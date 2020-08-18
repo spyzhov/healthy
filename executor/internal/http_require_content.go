@@ -1,4 +1,4 @@
-package executor
+package internal
 
 import (
 	"fmt"
@@ -8,14 +8,11 @@ import (
 
 type HttpArgsRequireContent struct {
 	RequireMatch
-	Type   HttpArgsRequireContentType `json:"type"`
-	Length *RequireInteger            `json:"length"`
-	JSON   []struct {
-		RequireJSONPath
-		RequireXPath
-	} `json:"json"`
-	XML  []RequireXPath `json:"xml"`
-	HTML []RequireXPath `json:"html"`
+	Type   HttpArgsRequireContentType   `json:"type"`
+	Length *RequireNumeric              `json:"length"`
+	JSON   []HttpArgsRequireContentJSON `json:"json"`
+	XML    []RequireXPath               `json:"xml"`
+	HTML   []RequireXPath               `json:"html"`
 }
 
 func (a *HttpArgsRequireContent) Validate() (err error) {
@@ -26,10 +23,7 @@ func (a *HttpArgsRequireContent) Validate() (err error) {
 		return err
 	}
 	for _, require := range a.JSON {
-		if err = require.RequireJSONPath.Validate(); err != nil {
-			return safe.Wrap(err, "json")
-		}
-		if err = require.RequireXPath.Validate(); err != nil {
+		if err = require.Validate(); err != nil {
 			return safe.Wrap(err, "json")
 		}
 	}
@@ -51,7 +45,7 @@ func (a *HttpArgsRequireContent) Match(content []byte) (err error) {
 		return fmt.Errorf("content: TYPE not match to be %s: %w", a.Type, err)
 	}
 	if a.Length != nil {
-		if err = a.Length.Match("content length", len(content)); err != nil {
+		if err = a.Length.Match("content length", float64(len(content))); err != nil {
 			return err
 		}
 	}
@@ -59,15 +53,8 @@ func (a *HttpArgsRequireContent) Match(content []byte) (err error) {
 		return err
 	}
 	for _, path := range a.JSON {
-		if path.RequireJSONPath.JSONPath != "" {
-			if err = path.RequireJSONPath.Match("content", content); err != nil {
-				return err
-			}
-		}
-		if path.RequireXPath.XPath != "" {
-			if err = path.RequireXPath.Match("content", HttpArgsRequireContentTypeJSON, content); err != nil {
-				return err
-			}
+		if err = path.Match("content", content); err != nil {
+			return err
 		}
 	}
 	for _, path := range a.HTML {

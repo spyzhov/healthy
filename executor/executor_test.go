@@ -7,11 +7,66 @@ import (
 	"testing"
 
 	"github.com/spyzhov/healthy/step"
+	"github.com/spyzhov/safe"
 )
 
 func call(fn step.Function) []interface{} {
+	if safe.IsNil(fn) {
+		return []interface{}{
+			nil,
+			fmt.Errorf("function is nil"),
+		}
+	}
 	res, err := fn()
 	return []interface{}{res, err}
+}
+
+func validate(t *testing.T, got step.Function, want step.Function) {
+	if safe.IsNil(got) && safe.IsNil(want) {
+		return
+	}
+	if safe.IsNil(got) && !safe.IsNil(want) {
+		t.Error("got nil, want result")
+		return
+	}
+	if !safe.IsNil(got) && safe.IsNil(want) {
+		t.Error("got result, want nil")
+		return
+	}
+	aRes, aErr := got()
+	wRes, wErr := want()
+	if aErr == nil && wErr != nil {
+		t.Error("Function() error:got nil, want result")
+		return
+	}
+	if aErr != nil && wErr == nil {
+		t.Error("Function() error:got result, want nil")
+		return
+	}
+	if aErr != nil && wErr != nil {
+		if wErr.Error() != aErr.Error() {
+			t.Errorf("Function() error: got = %v, want %v", wErr, aErr)
+		}
+	}
+	if aRes == nil && safe.IsNil(wRes) {
+		return
+	}
+	if aRes == nil && wRes != nil {
+		t.Error("Function() result: got nil, want result")
+		return
+	}
+	if aRes != nil && wRes == nil {
+		t.Error("Function() result: got result, want nil")
+		return
+	}
+	if aRes != nil && wRes != nil {
+		if aRes.Status != wRes.Status {
+			t.Errorf("Function() status: got = %v, want %v", aRes.Status, wRes.Status)
+		}
+		if aRes.Message != wRes.Message {
+			t.Errorf("Function() message: got = %v, want %v", aRes.Message, wRes.Message)
+		}
+	}
 }
 
 func TestGet(t *testing.T) {
