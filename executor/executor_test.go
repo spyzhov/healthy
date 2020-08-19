@@ -3,23 +3,11 @@ package executor
 import (
 	"context"
 	"fmt"
-	"reflect"
 	"testing"
 
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )
-
-func call(fn step.Function) []interface{} {
-	if safe.IsNil(fn) {
-		return []interface{}{
-			nil,
-			fmt.Errorf("function is nil"),
-		}
-	}
-	res, err := fn()
-	return []interface{}{res, err}
-}
 
 func validate(t *testing.T, got step.Function, want step.Function) {
 	if safe.IsNil(got) && safe.IsNil(want) {
@@ -70,7 +58,7 @@ func validate(t *testing.T, got step.Function, want step.Function) {
 }
 
 func TestGet(t *testing.T) {
-	executor := NewExecutor(context.Background())
+	executor := NewExecutor(context.Background(), "")
 	tests := []struct {
 		e       *Executor
 		name    string
@@ -142,11 +130,7 @@ func TestGet(t *testing.T) {
 			if tt.wantErr {
 				return
 			}
-			if got == nil {
-				t.Errorf("Get() got = %v, want <func>", got)
-			} else if !reflect.DeepEqual(call(got), call(tt.want)) {
-				t.Errorf("Get() got = %v, want %v", got, tt.want)
-			}
+			validate(t, got, tt.want)
 		})
 	}
 }

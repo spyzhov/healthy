@@ -140,7 +140,7 @@
 
         function clear_loader(card, message, className) {
             card.find(':disabled').removeAttr('disabled');
-            card.find('.card-body').text(message);
+            card.find('.card-body').html($('<pre/>').text(message));
             card.find('.card-header')[0].className = className;
             card.find('.spinner-border').addClass('d-none');
         }

@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/spyzhov/healthy/executor/internal"
+	. "github.com/spyzhov/healthy/executor/internal/args"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )
@@ -83,7 +83,7 @@ func TestExecutor_Http(t *testing.T) {
 	}{
 		{
 			name: "nil",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -111,7 +111,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_200_valid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -147,7 +147,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_201_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -183,7 +183,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_timeout_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -211,7 +211,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_payload_form_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -241,7 +241,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_form_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -271,7 +271,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_require_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -301,7 +301,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_200_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -337,7 +337,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_post_form_valid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					err := r.ParseMultipartForm(1024 * 1024)
@@ -387,7 +387,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_put_header_valid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -446,7 +446,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_put_header_invalid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)
@@ -495,7 +495,7 @@ func TestExecutor_Http(t *testing.T) {
 		},
 		{
 			name: "simple_get_auth_valid",
-			e:    NewExecutor(context.Background()),
+			e:    NewExecutor(context.Background(), ""),
 			getArgs: func(e *Executor) (args *HttpArgs, server *httptest.Server, err error) {
 				server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					setMethod(e, r)

@@ -12,12 +12,14 @@ import (
 )
 
 type Executor struct {
-	ctx context.Context
+	ctx     context.Context
+	version string
 }
 
-func NewExecutor(ctx context.Context) *Executor {
+func NewExecutor(ctx context.Context, version string) *Executor {
 	return &Executor{
-		ctx: ctx,
+		ctx:     ctx,
+		version: version,
 	}
 }
 
@@ -90,4 +92,13 @@ func getMethodArguments(name string, method *reflect.Value, args []interface{}) 
 		argv[i] = reflect.ValueOf(value)
 	}
 	return argv, nil
+}
+
+func call(fn step.Function) (res *step.Result, err error) {
+	defer func() {
+		if rec := recover(); rec != nil {
+			err = fmt.Errorf("panic: %v", rec)
+		}
+	}()
+	return fn()
 }

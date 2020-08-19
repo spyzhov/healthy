@@ -7,7 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	. "github.com/spyzhov/healthy/executor/internal"
+	. "github.com/spyzhov/healthy/executor/internal/args"
+	"github.com/spyzhov/healthy/executor/internal/net/http/transport"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )
@@ -38,11 +39,13 @@ func (e *Executor) Http(args *HttpArgs) (step.Function, error) {
 		}
 		if args.Redirect {
 			return &http.Client{
-				Timeout: timeout,
+				Timeout:   timeout,
+				Transport: transport.NewAgent("healthy/" + e.version),
 			}
 		}
 		return &http.Client{
-			Timeout: timeout,
+			Timeout:   timeout,
+			Transport: transport.NewAgent("healthy/" + e.version),
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
 				return http.ErrUseLastResponse
 			},
