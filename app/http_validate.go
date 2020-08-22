@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"runtime/debug"
 
 	. "github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
+	"go.uber.org/zap"
 )
 
 type request struct {
@@ -24,6 +26,7 @@ func (app *Application) httpValidate(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	defer func() {
 		if rec := recover(); rec != nil {
+			zap.L().Error("recover panic", zap.Any("recover", rec), zap.ByteString("stack", debug.Stack()))
 			w.WriteHeader(http.StatusInternalServerError)
 			write(w, &response{
 				Message: fmt.Sprintf("panic: %v", rec),

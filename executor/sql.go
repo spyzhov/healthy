@@ -19,7 +19,7 @@ import (
 type SqlArgs struct {
 	Driver  string         `json:"driver"`
 	URL     string         `json:"url"`
-	SQL     string         `json:"request"`
+	SQL     string         `json:"sql"`
 	Args    []interface{}  `json:"args"`
 	Require SqlArgsRequire `json:"require"`
 }
@@ -76,13 +76,6 @@ func (e *Executor) Sql(args *SqlArgs) (step.Function, error) {
 		}
 		return rows, err
 	}
-	ref := func(values []interface{}) (result []interface{}) {
-		result = make([]interface{}, 0, len(values))
-		for _, value := range values {
-			result = append(result, &value)
-		}
-		return
-	}
 
 	return func() (*step.Result, error) {
 		var (
@@ -104,7 +97,11 @@ func (e *Executor) Sql(args *SqlArgs) (step.Function, error) {
 		} else {
 			for rows.Next() {
 				row := make([]interface{}, len(header))
-				err = rows.Scan(ref(row)...)
+				ref := make([]interface{}, len(header))
+				for i := 0; i < len(header); i++ {
+					ref[i] = &row[i]
+				}
+				err = rows.Scan(ref...)
 				if err != nil {
 					return nil, safe.Wrap(err, "sql: scan rows")
 				}

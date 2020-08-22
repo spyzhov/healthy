@@ -4,7 +4,7 @@ import "github.com/spyzhov/safe"
 
 type SqlArgsRequire struct {
 	Count RequireNumeric       `json:"count"`
-	Rows  RequireTable         `json:"values"`
+	Rows  RequireTable         `json:"rows"`
 	Value SqlArgsRequireValues `json:"value"`
 }
 

@@ -7,11 +7,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"runtime/debug"
 	"strings"
 	"sync"
 
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
+	"go.uber.org/zap"
 )
 
 type Executor struct {
@@ -54,8 +56,8 @@ func Get(e *Executor, name string, args []interface{}) (step.Function, error) {
 	// region Call
 	result := method.Call(argv)
 	if len(result) == 2 {
-		if err, ok := result[1].Interface().(error); !ok && err != nil {
-			return nil, err
+		if err := result[1].Interface(); !safe.IsNil(err) {
+			return nil, fmt.Errorf("%v", err)
 		}
 		if fn, ok := result[0].Interface().(step.Function); ok {
 			return fn, nil
@@ -104,6 +106,7 @@ func getMethodArguments(name string, method *reflect.Value, args []interface{}) 
 func call(fn step.Function) (res *step.Result, err error) {
 	defer func() {
 		if rec := recover(); rec != nil {
+			zap.L().Error("recover panic", zap.Any("recover", rec), zap.ByteString("stack", debug.Stack()))
 			err = fmt.Errorf("panic: %v", rec)
 		}
 	}()

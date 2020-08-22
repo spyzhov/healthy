@@ -41,6 +41,9 @@ func (a *SqlArgsRequireValue) Match(rows [][]interface{}) (err error) {
 		return fmt.Errorf("column: not found")
 	}
 	str := fmt.Sprintf("%v", rows[a.Row][a.Column])
+	if safe.IsNil(rows[a.Row][a.Column]) {
+		str = "NULL"
+	}
 	if err = a.Numeric.MatchString("numeric", str); err != nil {
 		return err
 	}
