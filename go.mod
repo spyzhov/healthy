@@ -7,7 +7,9 @@ require (
 	github.com/antchfx/jsonquery v1.1.4
 	github.com/antchfx/xmlquery v1.2.4
 	github.com/caarlos0/env/v6 v6.3.0
+	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gobuffalo/packr/v2 v2.8.0
+	github.com/lib/pq v1.8.0
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.7.1
 	github.com/spyzhov/ajson v0.4.2

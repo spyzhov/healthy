@@ -3,23 +3,30 @@ package executor
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
+	"sync"
 
 	"github.com/spyzhov/healthy/step"
+	"github.com/spyzhov/safe"
 )
 
 type Executor struct {
+	mu      sync.Mutex
 	ctx     context.Context
 	version string
+
+	connections map[string]*sql.DB
 }
 
 func NewExecutor(ctx context.Context, version string) *Executor {
 	return &Executor{
-		ctx:     ctx,
-		version: version,
+		ctx:         ctx,
+		version:     version,
+		connections: make(map[string]*sql.DB),
 	}
 }
 
@@ -102,3 +109,22 @@ func call(fn step.Function) (res *step.Result, err error) {
 	}()
 	return fn()
 }
+
+// region Executor
+
+// Close is an io.Closer function
+func (e *Executor) Close() error {
+	for id, connection := range e.connections {
+		defer safe.Close(connection, "Executor:db_connections:"+id)
+	}
+	return nil
+}
+
+// protected will be run with the mutex protection
+func (e *Executor) protected(fn func() error) error {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	return fn()
+}
+
+// endregion

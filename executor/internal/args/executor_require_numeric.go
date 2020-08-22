@@ -2,6 +2,7 @@ package args
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/spyzhov/healthy/executor/internal"
 )
@@ -17,7 +18,28 @@ type RequireNumeric struct {
 	Not   *float64  `json:"not"`
 }
 
+func (a *RequireNumeric) Validate() (err error) {
+	if a == nil {
+		return nil
+	}
+	return nil
+}
+
+func (a *RequireNumeric) MatchString(name string, str string) error {
+	if a == nil {
+		return nil
+	}
+	numeric, err := strconv.ParseFloat(str, 64)
+	if err != nil {
+		return fmt.Errorf("%s: value is not numeric type", name)
+	}
+	return a.Match(name, numeric)
+}
+
 func (a *RequireNumeric) Match(name string, numeric float64) error {
+	if a == nil {
+		return nil
+	}
 	if len(a.In) > 0 {
 		if !internal.FloatInSlice(numeric, a.In) {
 			return fmt.Errorf("%s: value %v is not IN list: %v", name, numeric, a.In)

@@ -69,6 +69,7 @@ func (app *Application) Close() {
 	app.Logger.Debug("Application stops")
 
 	defer close(app.error)
+	defer safe.Close(app.Executor, "Executor")
 	//defer safe.Close(app.Resource, "resource name")
 }
 

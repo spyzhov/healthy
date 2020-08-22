@@ -1,18 +1,20 @@
 package args
 
-import "fmt"
+import (
+	"github.com/spyzhov/safe"
+)
 
 type RepeatArgsRequire struct {
-	Success int `json:"success"`
-	Warning int `json:"warning"`
+	Success Uint `json:"success"`
+	Warning Uint `json:"warning"`
 }
 
 func (a *RepeatArgsRequire) Validate() (err error) {
-	if a.Success < 0 {
-		return fmt.Errorf("success: should be greater or equal than zero")
+	if err = a.Success.Validate(); err != nil {
+		return safe.Wrap(err, "success")
 	}
-	if a.Warning < 0 {
-		return fmt.Errorf("warning: should be greater or equal than zero")
+	if err = a.Warning.Validate(); err != nil {
+		return safe.Wrap(err, "warning")
 	}
 	return nil
 }

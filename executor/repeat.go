@@ -24,7 +24,7 @@ func (e *Executor) Repeat(args *RepeatArgs, cmd *config.Step) (step.Function, er
 	}
 
 	if args.Require.Success == 0 {
-		args.Require.Success = args.Count
+		args.Require.Success = Uint(args.Count)
 	}
 	length := int(math.Log10(float64(args.Count))) + 1
 	format := fmt.Sprintf("%%0%dd/%%0%dd:[%%-7s]:%%s", length, length)
@@ -35,7 +35,7 @@ func (e *Executor) Repeat(args *RepeatArgs, cmd *config.Step) (step.Function, er
 	}
 
 	return func() (*step.Result, error) {
-		success := 0
+		success := Uint(0)
 		messages := make([]string, 0, args.Count)
 
 		for i := 0; i < args.Count; i++ {
@@ -75,10 +75,10 @@ func (a *RepeatArgs) Validate() (err error) {
 	if err = a.Require.Validate(); err != nil {
 		return safe.Wrap(err, "repeat: require")
 	}
-	if a.Require.Success > a.Count {
+	if int(a.Require.Success) > a.Count {
 		return fmt.Errorf("repeat: require: success: should be lesser or equal than %d", a.Count)
 	}
-	if a.Require.Warning > a.Count {
+	if int(a.Require.Warning) > a.Count {
 		return fmt.Errorf("repeat: require: warning: should be lesser or equal than %d", a.Count)
 	}
 	return nil

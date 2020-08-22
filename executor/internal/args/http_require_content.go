@@ -22,6 +22,11 @@ func (a *HttpArgsRequireContent) Validate() (err error) {
 	if err = a.RequireMatch.Validate(); err != nil {
 		return err
 	}
+	if a.Length != nil {
+		if err = a.Length.Validate(); err != nil {
+			return safe.Wrap(err, "length")
+		}
+	}
 	for _, require := range a.JSON {
 		if err = require.Validate(); err != nil {
 			return safe.Wrap(err, "json")

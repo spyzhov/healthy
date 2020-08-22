@@ -6,6 +6,9 @@ type RequireMatch struct {
 }
 
 func (a *RequireMatch) Validate() (err error) {
+	if a == nil {
+		return nil
+	}
 	if err = a.Regexp.Validate(); err != nil {
 		return err
 	}
@@ -16,6 +19,9 @@ func (a *RequireMatch) Validate() (err error) {
 }
 
 func (a *RequireMatch) Match(name string, input []byte) (err error) {
+	if a == nil {
+		return nil
+	}
 	if err = a.Regexp.Match(name, input); err != nil {
 		return err
 	}
@@ -26,6 +32,9 @@ func (a *RequireMatch) Match(name string, input []byte) (err error) {
 }
 
 func (a *RequireMatch) MatchStrings(name string, input []string) (err error) {
+	if a == nil {
+		return nil
+	}
 	if err = a.Regexp.MatchStrings(name, input); err != nil {
 		return err
 	}

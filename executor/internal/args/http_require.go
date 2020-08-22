@@ -15,6 +15,11 @@ type HttArgsRequire struct {
 }
 
 func (a *HttArgsRequire) Validate() (err error) {
+	if a.Status != nil {
+		if err = a.Status.Validate(); err != nil {
+			return safe.Wrap(err, "require: status")
+		}
+	}
 	if a.Content != nil {
 		if err = a.Content.Validate(); err != nil {
 			return safe.Wrap(err, "require: content")

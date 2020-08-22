@@ -12,10 +12,16 @@ type RequireJSONPath struct {
 }
 
 func (a *RequireJSONPath) Validate() error {
+	if a == nil {
+		return nil
+	}
 	return a.RequireMatch.Validate()
 }
 
 func (a *RequireJSONPath) Match(name string, content []byte) error {
+	if a == nil {
+		return nil
+	}
 	if a.JSONPath != "" {
 		nodes, err := ajson.JSONPath(content, a.JSONPath)
 		if err != nil {
