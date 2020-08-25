@@ -7,19 +7,22 @@ import (
 )
 
 type SqlArgsRequireValue struct {
-	Row     Uint             `json:"row"`
-	Column  Uint             `json:"column"`
+	Cell
+	IsNull  *Bool            `json:"is_null"`
 	Numeric *RequireNumeric  `json:"numeric"`
 	Text    *RequireMatch    `json:"text"`
 	JSON    *RequireJSONPath `json:"json"`
 }
 
 func (a *SqlArgsRequireValue) Validate() (err error) {
-	if err = a.Row.Validate(); err != nil {
-		return safe.Wrap(err, "value: row")
+	if a == nil {
+		return nil
 	}
-	if err = a.Column.Validate(); err != nil {
-		return safe.Wrap(err, "value: column")
+	if err = a.Cell.Validate(); err != nil {
+		return safe.Wrap(err, "value")
+	}
+	if err = a.IsNull.Validate(); err != nil {
+		return safe.Wrap(err, "is_null")
 	}
 	if err = a.Numeric.Validate(); err != nil {
 		return safe.Wrap(err, "numeric")
@@ -33,16 +36,20 @@ func (a *SqlArgsRequireValue) Validate() (err error) {
 	return nil
 }
 
-func (a *SqlArgsRequireValue) Match(rows [][]interface{}) (err error) {
-	if len(rows) <= int(a.Row) {
-		return fmt.Errorf("row: not found")
+func (a *SqlArgsRequireValue) Match(rows Table) (err error) {
+	if a == nil {
+		return nil
 	}
-	if len(rows[a.Row]) <= int(a.Column) {
-		return fmt.Errorf("column: not found")
+	if err = a.Cell.Match(rows); err != nil {
+		return err
 	}
-	str := fmt.Sprintf("%v", rows[a.Row][a.Column])
-	if safe.IsNil(rows[a.Row][a.Column]) {
+	isNil := safe.IsNil(a.Cell.get(rows))
+	str := fmt.Sprintf("%v", a.Cell.get(rows))
+	if isNil {
 		str = "NULL"
+	}
+	if err = a.IsNull.Match(isNil, "NULL", "NOT NULL"); err != nil {
+		return err
 	}
 	if err = a.Numeric.MatchString("numeric", str); err != nil {
 		return err

@@ -64,7 +64,7 @@ func (e *Executor) Sql(args *SqlArgs) (step.Function, error) {
 	var exec func(force bool) (*sql.Rows, error)
 	exec = func(first bool) (rows *sql.Rows, err error) {
 		rows, err = db.QueryContext(e.ctx, args.SQL, args.Args...)
-		if errors.Is(err, sql.ErrConnDone) {
+		if errors.Is(err, sql.ErrConnDone) || (err != nil && err.Error() == "sql: database is closed") {
 			if first {
 				rec := reconnect()
 				if rec != nil {

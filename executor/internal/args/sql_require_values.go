@@ -15,7 +15,7 @@ func (a SqlArgsRequireValues) Validate() (err error) {
 	return nil
 }
 
-func (a SqlArgsRequireValues) Match(rows [][]interface{}) (err error) {
+func (a SqlArgsRequireValues) Match(rows Table) (err error) {
 	for i, value := range a {
 		if err = value.Match(rows); err != nil {
 			return fmt.Errorf("value %d: %w", i, err)

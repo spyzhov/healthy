@@ -10,3 +10,7 @@ func (a Uint) Validate() (err error) {
 	}
 	return nil
 }
+
+func (a Uint) value() int {
+	return int(a)
+}
