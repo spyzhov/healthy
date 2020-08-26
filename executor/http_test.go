@@ -15,6 +15,8 @@ import (
 	"github.com/spyzhov/safe"
 )
 
+type contextKey string
+
 func TestExecutor_Http(t *testing.T) {
 	// region helpers
 	newString := func(s string) *string {
@@ -24,20 +26,20 @@ func TestExecutor_Http(t *testing.T) {
 		return &f
 	}
 	isValue := func(e *Executor, key, value string) {
-		if actual, ok := e.ctx.Value(key).(string); !ok {
+		if actual, ok := e.ctx.Value(contextKey(key)).(string); !ok {
 			t.Errorf("Value is not set for: %s", key)
 		} else if actual != value {
 			t.Errorf("Value is not valid for: %s (%s != %s)", key, value, actual)
 		}
 	}
 	isNotValue := func(e *Executor, key, value string) {
-		actual, ok := e.ctx.Value(key).(string)
+		actual, ok := e.ctx.Value(contextKey(key)).(string)
 		if ok && actual == value {
 			t.Errorf("Value is not valid for: %s (%s != %s)", key, value, actual)
 		}
 	}
 	setMethod := func(e *Executor, request *http.Request) {
-		e.ctx = context.WithValue(e.ctx, "method", request.Method)
+		e.ctx = context.WithValue(e.ctx, contextKey("method"), request.Method)
 	}
 	setBody := func(e *Executor, request *http.Request) {
 		defer safe.Close(request.Body, "request.Body")
@@ -45,13 +47,13 @@ func TestExecutor_Http(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		e.ctx = context.WithValue(e.ctx, "body", string(data))
+		e.ctx = context.WithValue(e.ctx, contextKey("body"), string(data))
 	}
 	setFormValues := func(e *Executor, request *http.Request) {
 		if request.MultipartForm != nil {
 			for key, values := range request.MultipartForm.Value {
 				for i, value := range values {
-					e.ctx = context.WithValue(e.ctx, fmt.Sprintf("form.values.%s.%d", key, i), value)
+					e.ctx = context.WithValue(e.ctx, contextKey(fmt.Sprintf("form.values.%s.%d", key, i)), value)
 				}
 			}
 		}
@@ -59,7 +61,7 @@ func TestExecutor_Http(t *testing.T) {
 	setHeaders := func(e *Executor, request *http.Request) {
 		for key, values := range request.Header {
 			for i, value := range values {
-				e.ctx = context.WithValue(e.ctx, fmt.Sprintf("header.%s.%d", key, i), value)
+				e.ctx = context.WithValue(e.ctx, contextKey(fmt.Sprintf("header.%s.%d", key, i)), value)
 			}
 		}
 	}
