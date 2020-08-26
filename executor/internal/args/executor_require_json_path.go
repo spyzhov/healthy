@@ -4,18 +4,26 @@ import (
 	"fmt"
 
 	"github.com/spyzhov/ajson"
+	"github.com/spyzhov/safe"
 )
 
 type RequireJSONPath struct {
 	JSONPath string `json:"jsonpath"`
 	RequireMatch
+	RequireJSONSchema
 }
 
-func (a *RequireJSONPath) Validate() error {
+func (a *RequireJSONPath) Validate() (err error) {
 	if a == nil {
 		return nil
 	}
-	return a.RequireMatch.Validate()
+	if err = a.RequireMatch.Validate(); err != nil {
+		return err
+	}
+	if err = a.RequireJSONSchema.Validate(); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (a *RequireJSONPath) Match(name string, content []byte) error {
@@ -31,7 +39,12 @@ func (a *RequireJSONPath) Match(name string, content []byte) error {
 		if err != nil {
 			return fmt.Errorf("%s: JSONPath(`%s`) marshal error: %w", name, a.JSONPath, err)
 		}
-		return a.RequireMatch.Match(name, result)
+		if err = a.RequireMatch.Match(name, result); err != nil {
+			return err
+		}
+		if err = a.RequireJSONSchema.Match(result); err != nil {
+			return safe.Wrap(err, name)
+		}
 	}
 	return nil
 }
