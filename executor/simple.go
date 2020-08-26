@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	. "github.com/spyzhov/healthy/executor/internal"
+	. "github.com/spyzhov/healthy/executor/internal/args"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )

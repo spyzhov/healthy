@@ -15,11 +15,5 @@ func (app *Application) init() (err error) {
 	if err = app.setSteps(); err != nil {
 		return safe.Wrap(err, "cannot initialize Steps")
 	}
-	if err = app.setTemplates(); err != nil {
-		return safe.Wrap(err, "cannot initialize http/templates")
-	}
-	if err = app.setHttpRoutes(); err != nil {
-		return safe.Wrap(err, "cannot initialize http/rotes")
-	}
 	return nil
 }

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"runtime/debug"
 	"time"
 
 	"github.com/spyzhov/safe"
@@ -23,7 +24,7 @@ func (f LoggedHandlerFunc) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res := &response{w, http.StatusOK, 0}
 	defer func(start time.Time) {
 		if rec := recover(); rec != nil {
-			zap.L().Error("go:recovered", zap.Any("recovered", rec))
+			zap.L().Error("recover panic", zap.Any("recover", rec), zap.ByteString("stack", debug.Stack()))
 			if res.ContentLength() == 0 {
 				res.WriteHeader(http.StatusInternalServerError)
 			}

@@ -17,8 +17,7 @@ func (app *Application) setConfig() (err error) {
 	} else if app.Config.ConfigYaml != "" {
 		content = []byte(app.Config.ConfigYaml)
 	} else {
-		app.Logger.Warn("config was not specified, use env: CONFIG_FILE or CONFIG_YAML")
-		content = make([]byte, 0)
+		return fmt.Errorf("config was not specified, use env: CONFIG_FILE or CONFIG_YAML")
 	}
 	app.StepConfig, err = config.NewConfig(content)
 	return err

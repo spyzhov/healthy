@@ -24,8 +24,9 @@ RUN go mod download
 
 COPY . .
 
-RUN go mod vendor && packr2
-RUN ["/bin/bash", "build.sh"]
+RUN go mod vendor -v
+RUN cd web/healthy && packr2 -v && cd -
+RUN ["/bin/bash", "build.sh", "./web/healthy", "/go/bin/healthy"]
 
 FROM debian:9-slim
 # environment

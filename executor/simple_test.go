@@ -2,11 +2,10 @@ package executor
 
 import (
 	"context"
-	"reflect"
 	"testing"
 	"time"
 
-	. "github.com/spyzhov/healthy/executor/internal"
+	. "github.com/spyzhov/healthy/executor/internal/args"
 	"github.com/spyzhov/healthy/step"
 )
 
@@ -23,7 +22,7 @@ func TestExecutor_Simple(t *testing.T) {
 	}{
 		{
 			name:     "nil",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: nil,
 			},
@@ -32,7 +31,7 @@ func TestExecutor_Simple(t *testing.T) {
 		},
 		{
 			name:     "blank",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: &SimpleArgs{
 					Sleep:   Duration{},
@@ -45,7 +44,7 @@ func TestExecutor_Simple(t *testing.T) {
 		},
 		{
 			name:     "valid(success)",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: &SimpleArgs{
 					Sleep:   Duration{},
@@ -60,7 +59,7 @@ func TestExecutor_Simple(t *testing.T) {
 		},
 		{
 			name:     "valid(warning)",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: &SimpleArgs{
 					Sleep:   Duration{},
@@ -75,7 +74,7 @@ func TestExecutor_Simple(t *testing.T) {
 		},
 		{
 			name:     "valid(error)",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: &SimpleArgs{
 					Sleep:   Duration{},
@@ -90,7 +89,7 @@ func TestExecutor_Simple(t *testing.T) {
 		},
 		{
 			name:     "valid(success)_sleep",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: &SimpleArgs{
 					Sleep: Duration{
@@ -107,7 +106,7 @@ func TestExecutor_Simple(t *testing.T) {
 		},
 		{
 			name:     "invalid(status)",
-			executor: NewExecutor(context.Background()),
+			executor: NewExecutor(context.Background(), ""),
 			args: args{
 				args: &SimpleArgs{
 					Sleep:   Duration{},
@@ -126,9 +125,7 @@ func TestExecutor_Simple(t *testing.T) {
 				t.Errorf("Simple() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(call(got), call(tt.want)) {
-				t.Errorf("Simple() got = %v, want %v", got, tt.want)
-			}
+			validate(t, got, tt.want)
 		})
 	}
 }

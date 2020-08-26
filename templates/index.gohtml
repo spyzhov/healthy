@@ -140,7 +140,7 @@
 
         function clear_loader(card, message, className) {
             card.find(':disabled').removeAttr('disabled');
-            card.find('.card-body').text(message);
+            card.find('.card-body').html($('<pre/>').text(message));
             card.find('.card-header')[0].className = className;
             card.find('.spinner-border').addClass('d-none');
         }
@@ -176,6 +176,7 @@
             } catch (e) {
                 console.warn(e);
                 level = 'error';
+                message = message || 'Request failed';
             }
 
             className += 'alert-' + get_class(level);
@@ -208,7 +209,7 @@
                     if (typeof data === 'object' && data != null) {
                         let keys = ['responseJSON', 'responseText', 'statusText'];
                         for (let i = 0; i < keys.length; i++) {
-                            if (data.hasOwnProperty(keys[i])) {
+                            if (data.hasOwnProperty(keys[i]) && data[keys[i]]) {
                                 write(card, data[keys[i]]);
                                 return;
                             }
