@@ -16,6 +16,7 @@ require (
 	github.com/spyzhov/ajson v0.4.2
 	github.com/spyzhov/safe v1.2.0
 	github.com/stretchr/testify v1.6.1 // indirect
+	github.com/xeipuuv/gojsonschema v1.2.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
 	gopkg.in/yaml.v2 v2.2.5

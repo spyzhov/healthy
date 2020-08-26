@@ -2,8 +2,6 @@ package args
 
 import (
 	"fmt"
-
-	"github.com/spyzhov/safe"
 )
 
 type Bool bool
@@ -13,7 +11,7 @@ func (a *Bool) Validate() error {
 }
 
 func (a *Bool) Match(value bool, True, False string) error {
-	if safe.IsNil(a) {
+	if a == nil {
 		return nil
 	}
 	if a.value() && !value {
