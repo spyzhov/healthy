@@ -3,9 +3,11 @@ package args
 import "github.com/spyzhov/safe"
 
 type SqlArgsRequire struct {
-	Count RequireNumeric       `json:"count"`
-	Rows  Table                `json:"rows"`
-	Value SqlArgsRequireValues `json:"value"`
+	Count  RequireNumeric        `json:"count"`
+	Rows   Table                 `json:"rows"`
+	Row    SqlArgsRequireRows    `json:"row"`
+	Column SqlArgsRequireColumns `json:"column"`
+	Value  SqlArgsRequireValues  `json:"value"`
 }
 
 func (a *SqlArgsRequire) Validate() (err error) {
@@ -17,6 +19,12 @@ func (a *SqlArgsRequire) Validate() (err error) {
 	}
 	if err = a.Rows.Validate(); err != nil {
 		return safe.Wrap(err, "rows")
+	}
+	if err = a.Row.Validate(); err != nil {
+		return err
+	}
+	if err = a.Column.Validate(); err != nil {
+		return err
 	}
 	if err = a.Value.Validate(); err != nil {
 		return safe.Wrap(err, "value")
@@ -36,6 +44,12 @@ func (a *SqlArgsRequire) Match(rows Table) (err error) {
 	}
 	if err = a.Rows.Match(rows, "NULL"); err != nil {
 		return safe.Wrap(err, "rows")
+	}
+	if err = a.Row.Match(rows); err != nil {
+		return err
+	}
+	if err = a.Column.Match(rows); err != nil {
+		return err
 	}
 	if err = a.Value.Match(rows); err != nil {
 		return err

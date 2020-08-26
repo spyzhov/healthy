@@ -128,11 +128,7 @@ groups:
               require:
                 count:
                   eq: 1
-                value:
-                    - row: 0
-                      column: 0
-                      text:
-                        not_match: ['NULL']
+                is_null: false
 
 frontend:
   script:
