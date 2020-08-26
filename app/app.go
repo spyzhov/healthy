@@ -2,8 +2,6 @@ package app
 
 import (
 	"context"
-	"html/template"
-	"net/http"
 	"sync"
 	"time"
 
@@ -25,20 +23,14 @@ type Application struct {
 	error chan error
 	once  sync.Once
 
-	Http       *http.ServeMux
-	Management *http.ServeMux
 	StepConfig *config.Config
 	StepGroups *step.Groups
 	Executor   *executor.Executor
-
-	templates map[string]*template.Template
 }
 
-func New() (app *Application, err error) {
+func New(config *Config) (app *Application, err error) {
 	app = &Application{
 		error:      make(chan error, 1),
-		Http:       http.NewServeMux(),
-		Management: http.NewServeMux(),
 		Info:       NewBuildInfo(),
 		WaitGroup:  new(sync.WaitGroup),
 		StepGroups: step.NewGroups(),
@@ -50,10 +42,13 @@ func New() (app *Application, err error) {
 			app.Close()
 		}
 	}()
-
-	app.Config, err = NewConfig()
-	if err != nil {
-		return nil, err
+	if config == nil {
+		app.Config, err = NewConfig()
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		app.Config = config
 	}
 	app.Logger, err = NewLogger(app.Config.Level)
 	if err != nil {
@@ -66,7 +61,10 @@ func New() (app *Application, err error) {
 
 // Close all necessary resources
 func (app *Application) Close() {
-	app.Logger.Debug("Application stops")
+	zap.L().Debug("Application stops")
+	if app == nil {
+		return
+	}
 
 	defer close(app.error)
 	defer safe.Close(app.Executor, "Executor")
@@ -75,31 +73,22 @@ func (app *Application) Close() {
 
 // Start initialize all long-living processes
 func (app *Application) Start() {
-	defer app.Stop()
-
-	// Run HTTP handler
-	if err := app.RunHttp(app.Http, app.Config.Port, "HTTP Server"); err != nil {
-		app.Logger.Panic("HTTP Server start error", zap.Error(err))
-	}
-
-	// Run HTTP Management handler
-	if err := app.RunHttp(app.Management, app.Config.ManagementPort, "HTTP Management Server"); err != nil {
-		app.Logger.Panic("HTTP Management Server start error", zap.Error(err))
-	}
-
 	select {
 	case err := <-app.error:
-		app.Logger.Panic("service crashed", zap.Error(err))
+		app.Logger.Panic("crashed", zap.Error(err))
 	case <-app.Ctx.Done():
-		app.Logger.Info("service stops via context")
+		app.Logger.Info("stops via context")
 	case sig := <-WaitExit():
-		app.Logger.Info("service stop", zap.Stringer("signal", sig))
+		app.Logger.Info("stop", zap.Stringer("signal", sig))
 	}
 }
 
 // Stop waits for all resources be cosed
 func (app *Application) Stop() {
-	app.Logger.Info("service stopping...")
+	if app == nil {
+		return
+	}
+	app.Logger.Info("stopping...")
 	app.CtxCancel()
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 

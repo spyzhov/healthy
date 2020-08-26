@@ -12,6 +12,7 @@ require (
 	github.com/lib/pq v1.8.0
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.7.1
+	github.com/spf13/pflag v1.0.3
 	github.com/spyzhov/ajson v0.4.2
 	github.com/spyzhov/safe v1.2.0
 	github.com/stretchr/testify v1.6.1 // indirect

@@ -17,4 +17,4 @@ go build \
 	        -X github.com/spyzhov/healthy/app.Commit=${APP_COMMIT} \
 	        -X github.com/spyzhov/healthy/app.Created=${APP_CREATED} \
 	    " \
-	    -o /go/bin/healthy .
+	    -o "$2" "$1"

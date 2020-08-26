@@ -1,4 +1,4 @@
-package app
+package web
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (app *Application) httpInfo(w http.ResponseWriter, r *http.Request) {
+func (app *Application) httpInfo(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	if err := json.NewEncoder(w).Encode(app.Info); err != nil {

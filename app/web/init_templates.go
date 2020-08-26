@@ -1,4 +1,4 @@
-package app
+package web
 
 import (
 	"html/template"
@@ -9,7 +9,7 @@ import (
 
 // setTemplates initialize all necessary templates
 func (app *Application) setTemplates() (err error) {
-	box := packr.New("templates", "../templates")
+	box := packr.New("templates", "../../templates")
 	app.templates = make(map[string]*template.Template)
 	// region Init templates
 	app.templates["index"], err = template.New("index").Parse(safe.Must(box.FindString("index.gohtml")).(string))

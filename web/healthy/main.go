@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/spyzhov/healthy/app"
+	app "github.com/spyzhov/healthy/app/web"
 )
 
 func main() {
