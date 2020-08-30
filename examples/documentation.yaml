@@ -1,0 +1,183 @@
+version: 1          # API version
+name: Project name  # [string] name of current project
+groups: # [array]  list of groups
+
+  - name: Simple    # [string, unique] name of current group
+    validate: # [array]  list of steps, what should be validated
+      - name: Success # [string] name of current step
+        type: simple  # [string] type of current step;
+        # Simple step used only for internal tests and will return given status result with the message.
+        # If field sleep is set - response will be given after given duration.
+        args: # [array]  arguments related to current type of step
+          - status: success         # [enum: error, warning, success, required] expected status;
+            message: Simple success # [string, required]   result message
+            sleep: 1s               # [duration] response will be given after given duration
+
+  - name: HTTP
+    validate:
+      - name: Http example
+        type: http # defines validation of HTTP request
+        # HTTP validation doing the usual HTTP request with the given parameters and validate the response.
+        # Only `URL` is required parameter, all others are optional.
+        # The default value of the `method` parameter is `GET`.
+        args:
+          - method: GET # [enum: http.Methods] todo
+            url: 'http://example.com' # [string, required] todo
+            timeout: 10s    # [duration] timeout for request; (default: 30s)
+            redirect: false # [bool] follow redirects; (default: false)
+            payload: '[data]' # [string] todo
+            form: # [wrapper] todo
+              values: # todo
+                fieldName01: fieldValue1 # todo
+              files: # todo
+                fileField: /var/www/example.log # todo
+            headers: # todo
+              X-Api-Key: 'top_secret'
+              Content-Type: application/json
+            basic_auth: # [wrapper] todo
+              username: fido # todo
+              password: cocacola # todo
+
+            require: # [Validation] current block validates different parts of the response
+              status: # [Numeric] validates status code of the response by given rules:
+                in: [ 1 ]     # [list of numeric] the investigated value should be in the list of these numbers
+                not_in: [ 0 ] # [list of numeric] the investigated value should not be in the list of these numbers
+                eq: 418       # [numeric] the investigated value should be equal to this value
+                not: 500      # [numeric] the investigated value should not be equal to this value
+                le: 600       # [numeric] the investigated value should be lesser than this value
+                leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                ge: 99        # [numeric] the investigated value should be greater than this value
+                geq: 100      # [numeric] the investigated value should be greater or equal than this value
+              content: # todo
+                type: JSON # [enum: JSON, XML, HTML, YAML] todo
+                match: '(?m)(regexp)?'     # [regexp] todo
+                not_match: '(?m)(regexp)?' # [regexp] todo
+                length: # [Numeric] validates Content-Length of the response by given rules:
+                  in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                  not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                  eq: 418       # [numeric] the investigated value should be equal to this value
+                  not: 500      # [numeric] the investigated value should not be equal to this value
+                  le: 600       # [numeric] the investigated value should be lesser than this value
+                  leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                  ge: 99        # [numeric] the investigated value should be greater than this value
+                  geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                json: # [list] list of JSON validators
+                  - jsonpath: '$.json[?(@.path)]' # todo
+                    xpath: '//x/path' # todo
+                    match: '(?m)(regexp)?'     # [regexp] todo
+                    not_match: '(?m)(regexp)?' # [regexp] todo
+                    jsonschema: | # [jsonschema] todo
+                      {
+                        "$id": "https://example.com/string.schema.json",
+                        "$schema": "http://json-schema.org/draft-07/schema#",
+                        "title": "String",
+                        "type": "string"
+                      }
+
+                html: # [list] list of HTML validators
+                  - xpath: '//x/path' # todo
+                    match: '(?m)(regexp)?'     # [regexp] todo
+                    not_match: '(?m)(regexp)?' # [regexp] todo
+                xml: # [list] list of XML validators
+                  - xpath: '//x/path' # todo
+                    match: '(?m)(regexp)?'     # [regexp] todo
+                    not_match: '(?m)(regexp)?' # [regexp] todo
+              header: # todo
+                exists: [ 'string' ] # todo
+                not_exists: [ 'string' ] # todo
+                match: # [map of lists of regexp] todo
+                  Header1: [ '(?m)(regexp)?' ] # [list of regexp] (ALL) todo
+                not_match: # [map of lists of regexp] todo
+                  Header2: [ '(?m)(regexp)?' ] # [list of regexp] (ALL) todo
+                eq:
+                  Header3: [ 'string' ] # [list of string] todo
+
+  - name: SQL
+    validate:
+      - name: SQL example
+        type: sql # defines validation of SQL request
+        # On the SQL validation, the system will do given SQL request with defined arguments and validate an answer
+        # with given rules defined in section `require`.
+        # Required fields: `driver`, `url` and `sql`.
+        # Be aware, that for different drivers used different packages and as the result:
+        # different placeholders for the arguments.
+        # List of packages:
+        #      mysql: "github.com/go-sql-driver/mysql"
+        #   postgres: "github.com/lib/pq"
+        args:
+          - driver: postgres # todo
+            url: "postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable" # todo
+            sql: 'SELECT $1' # todo
+            args: [ 1 ] # todo
+            require: # todo
+              count: # [Numeric] validates count of the rows in the given result:
+                in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                eq: 418       # [numeric] the investigated value should be equal to this value
+                not: 500      # [numeric] the investigated value should not be equal to this value
+                le: 600       # [numeric] the investigated value should be lesser than this value
+                leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                ge: 99        # [numeric] the investigated value should be greater than this value
+                geq: 100      # [numeric] the investigated value should be greater or equal than this value
+              rows: # todo
+                - [ 1, 2, 3 ] # todo
+                - [ 4, 'NULL', 6 ] # todo
+              row: # todo
+                - row: 0 # todo
+                  value: [ 1, 2, 3 ] # todo
+              column: # todo
+                - column: 1 # todo
+                  value: [ 2, 'NULL' ] # todo
+              value: # todo
+                - row: 1 # todo
+                  column: 2 # todo
+                  is_null: false # todo
+                  numeric: # [Numeric] validates count of the rows in the given result:
+                    in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                    not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                    eq: 418       # [numeric] the investigated value should be equal to this value
+                    not: 500      # [numeric] the investigated value should not be equal to this value
+                    le: 600       # [numeric] the investigated value should be lesser than this value
+                    leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                    ge: 99        # [numeric] the investigated value should be greater than this value
+                    geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                  text: # todo
+                    match: '(?m)(regexp)?'     # [regexp] todo
+                    not_match: '(?m)(regexp)?' # [regexp] todo
+                  json: # todo
+                    jsonpath: '$.json[?(@.path)]' # todo
+                    xpath: '//x/path' # todo
+                    match: '(?m)(regexp)?'     # [regexp] todo
+                    not_match: '(?m)(regexp)?' # [regexp] todo
+                    jsonschema: | # [jsonschema] todo
+                      {
+                        "$id": "https://example.com/string.schema.json",
+                        "$schema": "http://json-schema.org/draft-07/schema#",
+                        "title": "String",
+                        "type": "string"
+                      }
+
+
+
+  - name: Repeat
+    validate:
+      - name: Repeat example
+        type: repeat # todo
+        args: # todo
+          - count: 5 # todo
+            delay: 1s # todo
+            require: # todo
+              success: 3 # todo
+              warning: 1 # todo
+          - type: http # todo
+            args: # todo
+              - method: GET
+                url: 'http://example.com/'
+
+frontend: # todo
+  script: # todo
+    content: ~ # [string] todo
+    files: [ ] # [list of strings] todo
+  style: # todo
+    content: ~ # [string] todo
+    files: [ ] # [list of strings] todo Example: ['https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/slate/bootstrap.min.css']

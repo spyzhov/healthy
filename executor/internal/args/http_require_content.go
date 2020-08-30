@@ -8,11 +8,11 @@ import (
 
 type HttpArgsRequireContent struct {
 	RequireMatch
-	Type   HttpArgsRequireContentType   `json:"type"`
-	Length *RequireNumeric              `json:"length"`
-	JSON   []HttpArgsRequireContentJSON `json:"json"`
-	XML    []RequireXPath               `json:"xml"`
-	HTML   []RequireXPath               `json:"html"`
+	Type   HttpArgsRequireContentType `json:"type"`
+	Length *RequireNumeric            `json:"length"`
+	JSON   []RequireJSON              `json:"json"`
+	XML    []RequireXPath             `json:"xml"`
+	HTML   []RequireXPath             `json:"html"`
 }
 
 func (a *HttpArgsRequireContent) Validate() (err error) {

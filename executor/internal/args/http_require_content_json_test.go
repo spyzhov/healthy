@@ -216,7 +216,7 @@ func TestHttpArgsRequireContentJSON_Match(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := HttpArgsRequireContentJSON{
+			a := RequireJSON{
 				JSONPath:     tt.fields.JSONPath,
 				RequireXPath: tt.fields.RequireXPath,
 			}
@@ -322,7 +322,7 @@ func TestHttpArgsRequireContentJSON_Validate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := HttpArgsRequireContentJSON{
+			a := RequireJSON{
 				JSONPath:     tt.fields.JSONPath,
 				RequireXPath: tt.fields.RequireXPath,
 			}

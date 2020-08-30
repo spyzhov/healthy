@@ -7,13 +7,16 @@ import (
 	"github.com/spyzhov/safe"
 )
 
-type HttpArgsRequireContentJSON struct {
+type RequireJSON struct {
 	JSONPath string `json:"jsonpath"`
 	RequireXPath
 	RequireJSONSchema
 }
 
-func (a HttpArgsRequireContentJSON) Validate() (err error) {
+func (a *RequireJSON) Validate() (err error) {
+	if a == nil {
+		return nil
+	}
 	if err = a.RequireXPath.Validate(); err != nil {
 		return err
 	}
@@ -23,7 +26,10 @@ func (a HttpArgsRequireContentJSON) Validate() (err error) {
 	return nil
 }
 
-func (a HttpArgsRequireContentJSON) Match(name string, content []byte) (err error) {
+func (a *RequireJSON) Match(name string, content []byte) (err error) {
+	if a == nil {
+		return nil
+	}
 	if a.JSONPath != "" {
 		nodes, err := ajson.JSONPath(content, a.JSONPath)
 		if err != nil {

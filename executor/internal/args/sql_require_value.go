@@ -8,10 +8,10 @@ import (
 
 type SqlArgsRequireValue struct {
 	Cell
-	IsNull  *Bool            `json:"is_null"`
-	Numeric *RequireNumeric  `json:"numeric"`
-	Text    *RequireMatch    `json:"text"`
-	JSON    *RequireJSONPath `json:"json"`
+	IsNull  *Bool           `json:"is_null"`
+	Numeric *RequireNumeric `json:"numeric"`
+	Text    *RequireMatch   `json:"text"`
+	JSON    *RequireJSON    `json:"json"`
 }
 
 func (a *SqlArgsRequireValue) Validate() (err error) {

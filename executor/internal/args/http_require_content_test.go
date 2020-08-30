@@ -7,7 +7,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		RequireMatch RequireMatch
 		Type         HttpArgsRequireContentType
 		Length       *RequireNumeric
-		JSON         []HttpArgsRequireContentJSON
+		JSON         []RequireJSON
 		XML          []RequireXPath
 		HTML         []RequireXPath
 	}
@@ -56,7 +56,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 					Geq:   nil,
 					Not:   nil,
 				},
-				JSON: make([]HttpArgsRequireContentJSON, 0),
+				JSON: make([]RequireJSON, 0),
 				XML:  make([]RequireXPath, 0),
 				HTML: make([]RequireXPath, 0),
 			},
@@ -244,7 +244,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				},
 				Type:   "",
 				Length: nil,
-				JSON: []HttpArgsRequireContentJSON{
+				JSON: []RequireJSON{
 					{
 						JSONPath: "$",
 						RequireXPath: RequireXPath{
@@ -275,7 +275,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				},
 				Type:   "",
 				Length: nil,
-				JSON: []HttpArgsRequireContentJSON{
+				JSON: []RequireJSON{
 					{
 						JSONPath: "$",
 						RequireXPath: RequireXPath{
@@ -436,7 +436,7 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 		RequireMatch RequireMatch
 		Type         HttpArgsRequireContentType
 		Length       *RequireNumeric
-		JSON         []HttpArgsRequireContentJSON
+		JSON         []RequireJSON
 		XML          []RequireXPath
 		HTML         []RequireXPath
 	}
@@ -478,7 +478,7 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 					Geq:   nil,
 					Not:   nil,
 				},
-				JSON: make([]HttpArgsRequireContentJSON, 0),
+				JSON: make([]RequireJSON, 0),
 				XML:  make([]RequireXPath, 0),
 				HTML: make([]RequireXPath, 0),
 			},
@@ -591,7 +591,7 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 				},
 				Type:   "",
 				Length: nil,
-				JSON: []HttpArgsRequireContentJSON{
+				JSON: []RequireJSON{
 					{
 						JSONPath: "$",
 						RequireXPath: RequireXPath{
@@ -619,7 +619,7 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 				},
 				Type:   "",
 				Length: nil,
-				JSON: []HttpArgsRequireContentJSON{
+				JSON: []RequireJSON{
 					{
 						JSONPath: "$",
 						RequireXPath: RequireXPath{

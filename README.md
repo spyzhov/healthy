@@ -8,4 +8,5 @@ The project runs on your own infrastructure and under your control.
 
 # License
 
-MIT licensed. See the [LICENSE](LICENSE) file for details.
+MIT licensed. See the [LICENSE](LICENSE) file for details 
+and [Inherited Licenses](INHERITED_LICENSES.md) to find licenses of used packages. 
