@@ -8,9 +8,9 @@ groups: # [array]  list of groups
         type: simple  # [string] type of current step;
         # Simple step used only for internal tests and will return given status result with the message.
         # If field sleep is set - response will be given after given duration.
-        args: # [array]  arguments related to current type of step
-          - status: success         # [enum: error, warning, success, required] expected status;
-            message: Simple success # [string, required]   result message
+        args: # [array] arguments related to current type of step
+          - status: success         # [string, enum: error, warning, success, required] expected status;
+            message: Simple success # [string] result message
             sleep: 1s               # [duration] response will be given after given duration
 
   - name: HTTP
@@ -21,25 +21,25 @@ groups: # [array]  list of groups
         # Only `URL` is required parameter, all others are optional.
         # The default value of the `method` parameter is `GET`.
         args:
-          - method: GET # [enum: http.Methods] todo
-            url: 'http://example.com' # [string, required] todo
-            timeout: 10s    # [duration] timeout for request; (default: 30s)
-            redirect: false # [bool] follow redirects; (default: false)
-            payload: '[data]' # [string] todo
-            form: # [wrapper] todo
-              values: # todo
-                fieldName01: fieldValue1 # todo
-              files: # todo
-                fileField: /var/www/example.log # todo
-            headers: # todo
+          - method: GET # [string, enum: http.Methods] HTTP method of the request;
+            url: 'http://example.com' # [string, required] full URL of the request;
+            timeout: 10s      # [duration] timeout for request; (default: 30s)
+            redirect: false   # [bool] follow redirects; (default: false)
+            payload: '[data]' # [string] string with any kind of data as the request body; you can send payload or form at the same time;
+            form: # [wrapper] the wrapper of form values, if you want to send a form with values (or/and files); you can send payload or form at the same time;
+              values: # [map string to string] list of field-value pairs to be sent as values;
+                fieldName01: fieldValue1 # the value should be any string
+              files: # [map string to string] list of field-file_path pairs to be sent as files;
+                fileField: /var/www/example.log # the value should be a full path to the file
+            headers: # [map string to string] list of field-value pairs to be sent as request headers;
               X-Api-Key: 'top_secret'
               Content-Type: application/json
-            basic_auth: # [wrapper] todo
-              username: fido # todo
-              password: cocacola # todo
-
-            require: # [Validation] current block validates different parts of the response
-              status: # [Numeric] validates status code of the response by given rules:
+            basic_auth: # [wrapper] the wrapper of the Basic Auth data;
+              username: fido     # [string] valid Username;
+              password: cocacola # [string] valid Password;
+            # All usual validators have `require` block with all necessary assertions;
+            require: # [Validation] current block validates different parts of the response:
+              status: # [Numeric] validates status code of the response by given assertions:
                 in: [ 1 ]     # [list of numeric] the investigated value should be in the list of these numbers
                 not_in: [ 0 ] # [list of numeric] the investigated value should not be in the list of these numbers
                 eq: 418       # [numeric] the investigated value should be equal to this value
@@ -48,11 +48,11 @@ groups: # [array]  list of groups
                 leq: 599      # [numeric] the investigated value should be lesser or equal than this value
                 ge: 99        # [numeric] the investigated value should be greater than this value
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
-              content: # todo
-                type: JSON # [enum: JSON, XML, HTML, YAML] todo
-                match: '(?m)(regexp)?'     # [regexp] todo
-                not_match: '(?m)(regexp)?' # [regexp] todo
-                length: # [Numeric] validates Content-Length of the response by given rules:
+              content: # [Content] validates the content of the response by given assertions:
+                type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
+                match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                length: # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
@@ -61,36 +61,44 @@ groups: # [array]  list of groups
                   leq: 599      # [numeric] the investigated value should be lesser or equal than this value
                   ge: 99        # [numeric] the investigated value should be greater than this value
                   geq: 100      # [numeric] the investigated value should be greater or equal than this value
-                json: # [list] list of JSON validators
-                  - jsonpath: '$.json[?(@.path)]' # todo
-                    xpath: '//x/path' # todo
-                    match: '(?m)(regexp)?'     # [regexp] todo
-                    not_match: '(?m)(regexp)?' # [regexp] todo
-                    jsonschema: | # [jsonschema] todo
+                json: # [list] list of JSON validators; each validator runs independent and can check different part of the content;
+                  - jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                    xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
                       {
                         "$id": "https://example.com/string.schema.json",
                         "$schema": "http://json-schema.org/draft-07/schema#",
-                        "title": "String",
-                        "type": "string"
+                        "title": "Country",
+                        "type": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "string",
+                              "enum": ["NW", "NE", "SW", "SE"]
+                            }
+                          ]
+                        }
                       }
 
-                html: # [list] list of HTML validators
-                  - xpath: '//x/path' # todo
-                    match: '(?m)(regexp)?'     # [regexp] todo
-                    not_match: '(?m)(regexp)?' # [regexp] todo
-                xml: # [list] list of XML validators
-                  - xpath: '//x/path' # todo
-                    match: '(?m)(regexp)?'     # [regexp] todo
-                    not_match: '(?m)(regexp)?' # [regexp] todo
-              header: # todo
-                exists: [ 'string' ] # todo
-                not_exists: [ 'string' ] # todo
-                match: # [map of lists of regexp] todo
-                  Header1: [ '(?m)(regexp)?' ] # [list of regexp] (ALL) todo
-                not_match: # [map of lists of regexp] todo
-                  Header2: [ '(?m)(regexp)?' ] # [list of regexp] (ALL) todo
-                eq:
-                  Header3: [ 'string' ] # [list of string] todo
+                html: # [list] list of HTML validators; each validator runs independent and can check different part of the content;
+                  - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                xml: # [list] list of XML validators; each validator runs independent and can check different part of the content;
+                  - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+              header: # [wrapper] wrapper of the header validators:
+                exists: [ 'string' ]     # [list of strings] all given headers should exist as the response's headers keys;
+                not_exists: [ 'string' ] # [list of strings] all given headers should not exist as the response's headers keys;
+                match: # [map of lists of regex] each header value should be valid with each given regex;
+                  Header1: [ '(?m)(regex){1,}' ] # [list of regex] the key is header name, value - list of the given regexes;
+                not_match: # [map of lists of regex] each header value should not be valid with each given regex;
+                  Header2: [ '(?m)(regex){1,}' ] # [list of regex] the key is header name, value - list of the given regexes;
+                eq: # [map of string] each header value should be equal to given values;
+                  Header3: [ 'string' ] # [list of string] the key is header name, value - list of the given values;
 
   - name: SQL
     validate:
@@ -142,21 +150,28 @@ groups: # [array]  list of groups
                     ge: 99        # [numeric] the investigated value should be greater than this value
                     geq: 100      # [numeric] the investigated value should be greater or equal than this value
                   text: # todo
-                    match: '(?m)(regexp)?'     # [regexp] todo
-                    not_match: '(?m)(regexp)?' # [regexp] todo
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
                   json: # todo
-                    jsonpath: '$.json[?(@.path)]' # todo
-                    xpath: '//x/path' # todo
-                    match: '(?m)(regexp)?'     # [regexp] todo
-                    not_match: '(?m)(regexp)?' # [regexp] todo
-                    jsonschema: | # [jsonschema] todo
+                    jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                    xpath: '//x/path' # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
                       {
                         "$id": "https://example.com/string.schema.json",
                         "$schema": "http://json-schema.org/draft-07/schema#",
-                        "title": "String",
-                        "type": "string"
+                        "title": "Country",
+                        "type": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "string",
+                              "enum": ["NW", "NE", "SW", "SE"]
+                            }
+                          ]
+                        }
                       }
-
 
 
   - name: Repeat
