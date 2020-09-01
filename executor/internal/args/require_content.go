@@ -6,21 +6,21 @@ import (
 	"github.com/spyzhov/safe"
 )
 
-type HttpArgsRequireContent struct {
-	RequireMatch
+type RequireContent struct {
 	Type   HttpArgsRequireContentType `json:"type"`
 	Length *RequireNumeric            `json:"length"`
 	JSON   []RequireJSON              `json:"json"`
 	XML    []RequireXPath             `json:"xml"`
 	HTML   []RequireXPath             `json:"html"`
+	Text   []RequireMatch             `json:"text"`
 }
 
-func (a *HttpArgsRequireContent) Validate() (err error) {
+func (a *RequireContent) Validate() (err error) {
+	if a == nil {
+		return nil
+	}
 	if err = a.Type.Validate(); err != nil {
 		return safe.Wrap(err, "type")
-	}
-	if err = a.RequireMatch.Validate(); err != nil {
-		return err
 	}
 	if a.Length != nil {
 		if err = a.Length.Validate(); err != nil {
@@ -42,38 +42,48 @@ func (a *HttpArgsRequireContent) Validate() (err error) {
 			return safe.Wrap(err, "xml")
 		}
 	}
+	for _, require := range a.Text {
+		if err = require.Validate(); err != nil {
+			return safe.Wrap(err, "text")
+		}
+	}
 	return nil
 }
 
-func (a *HttpArgsRequireContent) Match(content []byte) (err error) {
+func (a *RequireContent) Match(name string, content []byte) (err error) {
+	if a == nil {
+		return nil
+	}
 	if err = a.Type.Match(content); err != nil {
-		return fmt.Errorf("content: TYPE not match to be %s: %w", a.Type, err)
+		return fmt.Errorf("%s: TYPE not match to be %s: %w", name, a.Type, err)
 	}
 	if a.Length != nil {
-		if err = a.Length.Match("content length", float64(len(content))); err != nil {
+		if err = a.Length.Match(name+": length", float64(len(content))); err != nil {
 			return err
 		}
 	}
-	if err = a.RequireMatch.Match("content", content); err != nil {
-		return err
-	}
 	for _, path := range a.JSON {
-		if err = path.Match("content", content); err != nil {
+		if err = path.Match(name, content); err != nil {
 			return err
 		}
 	}
 	for _, path := range a.HTML {
 		if path.XPath != "" {
-			if err = path.Match("content", HttpArgsRequireContentTypeHTML, content); err != nil {
+			if err = path.Match(name, HttpArgsRequireContentTypeHTML, content); err != nil {
 				return err
 			}
 		}
 	}
 	for _, path := range a.XML {
 		if path.XPath != "" {
-			if err = path.Match("content", HttpArgsRequireContentTypeXML, content); err != nil {
+			if err = path.Match(name, HttpArgsRequireContentTypeXML, content); err != nil {
 				return err
 			}
+		}
+	}
+	for _, require := range a.Text {
+		if err = require.Match(name+": text", content); err != nil {
+			return err
 		}
 	}
 	return nil

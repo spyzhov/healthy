@@ -24,6 +24,7 @@ groups:
           - status: success
             message: Simple success after 1 second
             sleep: 1s
+
   - name: Available HTTP resources
     validate:
       - name: google.com
@@ -79,6 +80,7 @@ groups:
                 JSON:
                   - jsonpath: '$.datetime'
                     match: [ '(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d[1,3,5,7,9]\.\d+\+\d{2}:\d{2})' ]
+
   - name: Not stable resources
     validate:
       - name: 'Retry: [worldtimeapi.org] odd sec'
@@ -101,6 +103,7 @@ groups:
                     JSON:
                       - jsonpath: '$.datetime'
                         match: [ '(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d[1,3,5,7,9]\.\d+\+\d{2}:\d{2})' ]
+
   - name: Database
     validate:
       - name: 'Postgresql: healthy'
@@ -119,7 +122,7 @@ groups:
                   column: 0
                   numeric:
                     eq: 1
-      - name: 'Postgresql: table exists'
+      - name: 'Postgresql: table `public.example` exists'
         type: sql
         args:
           - driver: postgres
@@ -129,6 +132,21 @@ groups:
               count:
                 eq: 1
               is_null: false
+
+  - name: Other
+    validate:
+      - name: 'curl request'
+        type: cmd
+        args:
+          - command: [ "curl", "http://google.com" ]
+            require:
+              exit_code:
+                eq: 0
+              output:
+                type: HTML
+                html:
+                  - xpath: //title
+                    match: [ '^301 Moved$' ]
 
 frontend:
   script:

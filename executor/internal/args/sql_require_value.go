@@ -10,8 +10,7 @@ type SqlArgsRequireValue struct {
 	Cell
 	IsNull  *Bool           `json:"is_null"`
 	Numeric *RequireNumeric `json:"numeric"`
-	Text    *RequireMatch   `json:"text"`
-	JSON    *RequireJSON    `json:"json"`
+	Content *RequireContent `json:"content"`
 }
 
 func (a *SqlArgsRequireValue) Validate() (err error) {
@@ -27,11 +26,8 @@ func (a *SqlArgsRequireValue) Validate() (err error) {
 	if err = a.Numeric.Validate(); err != nil {
 		return safe.Wrap(err, "numeric")
 	}
-	if err = a.Text.Validate(); err != nil {
-		return safe.Wrap(err, "text")
-	}
-	if err = a.JSON.Validate(); err != nil {
-		return safe.Wrap(err, "json")
+	if err = a.Content.Validate(); err != nil {
+		return safe.Wrap(err, "content")
 	}
 	return nil
 }
@@ -54,10 +50,7 @@ func (a *SqlArgsRequireValue) Match(rows Table) (err error) {
 	if err = a.Numeric.MatchString("numeric", str); err != nil {
 		return err
 	}
-	if err = a.Text.Match("text", []byte(str)); err != nil {
-		return err
-	}
-	if err = a.JSON.Match("json", []byte(str)); err != nil {
+	if err = a.Content.Match("content", []byte(str)); err != nil {
 		return err
 	}
 	return nil

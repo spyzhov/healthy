@@ -288,7 +288,7 @@ func TestExecutor_Http(t *testing.T) {
 					Redirect:  false,
 					BasicAuth: nil,
 					Require: HttArgsRequire{
-						Content: &HttpArgsRequireContent{
+						Content: &RequireContent{
 							Type: "WRONG",
 						},
 					},
@@ -368,7 +368,7 @@ func TestExecutor_Http(t *testing.T) {
 					Redirect:  false,
 					BasicAuth: nil,
 					Require: HttArgsRequire{
-						Content: &HttpArgsRequireContent{
+						Content: &RequireContent{
 							Length: &RequireNumeric{
 								Eq: newFloat64(10),
 							},

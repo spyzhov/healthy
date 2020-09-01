@@ -4,12 +4,12 @@ import "testing"
 
 func TestHttpArgsRequireContent_Match(t *testing.T) {
 	type fields struct {
-		RequireMatch RequireMatch
-		Type         HttpArgsRequireContentType
-		Length       *RequireNumeric
-		JSON         []RequireJSON
-		XML          []RequireXPath
-		HTML         []RequireXPath
+		Type   HttpArgsRequireContentType
+		Length *RequireNumeric
+		JSON   []RequireJSON
+		XML    []RequireXPath
+		HTML   []RequireXPath
+		Text   []RequireMatch
 	}
 	type args struct {
 		content []byte
@@ -23,15 +23,12 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "nil",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text:   nil,
 			},
 			args: args{
 				content: nil,
@@ -41,10 +38,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "blank",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    make(RequireFieldMatch, 0),
-					NotRegexp: make(RequireFieldMatchNot, 0),
-				},
 				Type: "",
 				Length: &RequireNumeric{
 					In:    make([]float64, 0),
@@ -59,6 +52,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				JSON: make([]RequireJSON, 0),
 				XML:  make([]RequireXPath, 0),
 				HTML: make([]RequireXPath, 0),
+				Text: make([]RequireMatch, 0),
 			},
 			args: args{
 				content: make([]byte, 0),
@@ -68,17 +62,19 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_match",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: RequireFieldMatch{
-						`content`,
-					},
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: RequireFieldMatch{
+							`content`,
+						},
+						NotRegexp: nil,
+					},
+				},
 			},
 			args: args{
 				content: []byte(`content`),
@@ -88,17 +84,19 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_match",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: RequireFieldMatch{
-						`wrong`,
-					},
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: RequireFieldMatch{
+							`wrong`,
+						},
+						NotRegexp: nil,
+					},
+				},
 			},
 			args: args{
 				content: []byte(`content`),
@@ -108,17 +106,19 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_not_match",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: nil,
-					NotRegexp: RequireFieldMatchNot{
-						`wrong`,
-					},
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: nil,
+						NotRegexp: RequireFieldMatchNot{
+							`wrong`,
+						},
+					},
+				},
 			},
 			args: args{
 				content: []byte(`content`),
@@ -128,17 +128,19 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_not_match",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: nil,
-					NotRegexp: RequireFieldMatchNot{
-						`content`,
-					},
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: nil,
+						NotRegexp: RequireFieldMatchNot{
+							`content`,
+						},
+					},
+				},
 			},
 			args: args{
 				content: []byte(`content`),
@@ -148,15 +150,12 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_type",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "JSON",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text:   nil,
 			},
 			args: args{
 				content: []byte(`{"foo": true}`),
@@ -166,15 +165,12 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_type",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "JSON",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text:   nil,
 			},
 			args: args{
 				content: []byte(`{"foo"`),
@@ -184,10 +180,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_length",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type: "",
 				Length: &RequireNumeric{
 					In:    []float64{7},
@@ -202,6 +194,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				JSON: nil,
 				XML:  nil,
 				HTML: nil,
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`content`),
@@ -211,10 +204,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_length",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type: "",
 				Length: &RequireNumeric{
 					In:    []float64{1},
@@ -229,6 +218,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				JSON: nil,
 				XML:  nil,
 				HTML: nil,
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`content`),
@@ -238,10 +228,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_json",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON: []RequireJSON{
@@ -260,6 +246,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				},
 				XML:  nil,
 				HTML: nil,
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`{}`),
@@ -269,10 +256,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_json",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON: []RequireJSON{
@@ -291,6 +274,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 				},
 				XML:  nil,
 				HTML: nil,
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`{}`),
@@ -300,10 +284,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_xml",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -319,6 +299,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 					},
 				},
 				HTML: nil,
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`<?xml version="1.0" encoding="UTF-8" ?>
@@ -329,10 +310,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_xml",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -348,6 +325,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 					},
 				},
 				HTML: nil,
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`<?xml version="1.0" encoding="UTF-8" ?>
@@ -358,10 +336,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "valid_html",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -377,6 +351,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 						},
 					},
 				},
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`<!doctype html>
@@ -387,10 +362,6 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 		{
 			name: "invalid_html",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -406,6 +377,7 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 						},
 					},
 				},
+				Text: nil,
 			},
 			args: args{
 				content: []byte(`<!doctype html>
@@ -416,15 +388,15 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &HttpArgsRequireContent{
-				RequireMatch: tt.fields.RequireMatch,
-				Type:         tt.fields.Type,
-				Length:       tt.fields.Length,
-				JSON:         tt.fields.JSON,
-				XML:          tt.fields.XML,
-				HTML:         tt.fields.HTML,
+			a := &RequireContent{
+				Type:   tt.fields.Type,
+				Length: tt.fields.Length,
+				JSON:   tt.fields.JSON,
+				XML:    tt.fields.XML,
+				HTML:   tt.fields.HTML,
+				Text:   tt.fields.Text,
 			}
-			if err := a.Match(tt.args.content); (err != nil) != tt.wantErr {
+			if err := a.Match("content", tt.args.content); (err != nil) != tt.wantErr {
 				t.Errorf("Match() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -433,12 +405,12 @@ func TestHttpArgsRequireContent_Match(t *testing.T) {
 
 func TestHttpArgsRequireContent_Validate(t *testing.T) {
 	type fields struct {
-		RequireMatch RequireMatch
-		Type         HttpArgsRequireContentType
-		Length       *RequireNumeric
-		JSON         []RequireJSON
-		XML          []RequireXPath
-		HTML         []RequireXPath
+		Type   HttpArgsRequireContentType
+		Length *RequireNumeric
+		JSON   []RequireJSON
+		XML    []RequireXPath
+		HTML   []RequireXPath
+		Text   []RequireMatch
 	}
 	tests := []struct {
 		name    string
@@ -448,25 +420,18 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 		{
 			name: "nil",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text:   nil,
 			},
 			wantErr: false,
 		},
 		{
 			name: "blank",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    make(RequireFieldMatch, 0),
-					NotRegexp: make(RequireFieldMatchNot, 0),
-				},
 				Type: "",
 				Length: &RequireNumeric{
 					In:    make([]float64, 0),
@@ -481,114 +446,113 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 				JSON: make([]RequireJSON, 0),
 				XML:  make([]RequireXPath, 0),
 				HTML: make([]RequireXPath, 0),
+				Text: make([]RequireMatch, 0),
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid_RequireMatch_Regexp",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: RequireFieldMatch{
-						`.`,
-					},
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: RequireFieldMatch{
+							`.`,
+						},
+						NotRegexp: nil,
+					},
+				},
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid_RequireMatch_Regexp",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: RequireFieldMatch{
-						`(`,
-					},
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: RequireFieldMatch{
+							`(`,
+						},
+						NotRegexp: nil,
+					},
+				},
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid_RequireMatch_NotRegexp",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: nil,
-					NotRegexp: RequireFieldMatchNot{
-						`.`,
-					},
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: nil,
+						NotRegexp: RequireFieldMatchNot{
+							`.`,
+						},
+					},
+				},
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid_RequireMatch_NotRegexp",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp: nil,
-					NotRegexp: RequireFieldMatchNot{
-						`(`,
-					},
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text: []RequireMatch{
+					{
+						Regexp: nil,
+						NotRegexp: RequireFieldMatchNot{
+							`(`,
+						},
+					},
+				},
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid_Type",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "JSON",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text:   nil,
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid_Type",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "WRONG",
 				Length: nil,
 				JSON:   nil,
 				XML:    nil,
 				HTML:   nil,
+				Text:   nil,
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid_JSON",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON: []RequireJSON{
@@ -607,16 +571,13 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 				},
 				XML:  nil,
 				HTML: nil,
+				Text: nil,
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid_JSON",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON: []RequireJSON{
@@ -635,16 +596,13 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 				},
 				XML:  nil,
 				HTML: nil,
+				Text: nil,
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid_XML",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -660,16 +618,13 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 					},
 				},
 				HTML: nil,
+				Text: nil,
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid_XML",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -685,16 +640,13 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 					},
 				},
 				HTML: nil,
+				Text: nil,
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid_HTML",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -710,16 +662,13 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 						},
 					},
 				},
+				Text: nil,
 			},
 			wantErr: false,
 		},
 		{
 			name: "invalid_HTML",
 			fields: fields{
-				RequireMatch: RequireMatch{
-					Regexp:    nil,
-					NotRegexp: nil,
-				},
 				Type:   "",
 				Length: nil,
 				JSON:   nil,
@@ -735,19 +684,20 @@ func TestHttpArgsRequireContent_Validate(t *testing.T) {
 						},
 					},
 				},
+				Text: nil,
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := &HttpArgsRequireContent{
-				RequireMatch: tt.fields.RequireMatch,
-				Type:         tt.fields.Type,
-				Length:       tt.fields.Length,
-				JSON:         tt.fields.JSON,
-				XML:          tt.fields.XML,
-				HTML:         tt.fields.HTML,
+			a := &RequireContent{
+				Type:   tt.fields.Type,
+				Length: tt.fields.Length,
+				JSON:   tt.fields.JSON,
+				XML:    tt.fields.XML,
+				HTML:   tt.fields.HTML,
+				Text:   tt.fields.Text,
 			}
 			if err := a.Validate(); (err != nil) != tt.wantErr {
 				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
