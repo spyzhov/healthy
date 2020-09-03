@@ -322,10 +322,11 @@ groups: # [array]  list of groups
                   - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
                     not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
 
-frontend: # todo
-  script: # todo
-    content: ~ # [string] todo
-    files: [ ] # [list of strings] todo
-  style: # todo
-    content: ~ # [string] todo
-    files: [ ] # [list of strings] todo Example: ['https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/slate/bootstrap.min.css']
+frontend: # frontend part of configuration:
+  script: # JS part of configuration:
+    content: ~ # [string] given string will be included as a content in the <script> block;
+    files: [ ] # [list of strings] list of files which will be imported in the page as JS files;
+  style: # CSS part of configuration:
+    content: ~ # [string] given string will be included as a content in the <style> block;
+    files: # [list of strings] list of files which will be imported in the page as CSS files;
+      - 'https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/slate/bootstrap.min.css'
