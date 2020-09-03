@@ -147,6 +147,21 @@ groups:
                 html:
                   - xpath: //title
                     match: [ '^301 Moved$' ]
+#      - name: 'Dial: GET'
+#        type: dial
+#        args:
+#          # ncat -l 10000 -k -c 'xargs -n1 echo'
+#          - type: tcp
+#            address: '127.0.0.1:10000'
+#            rn: true
+#            input: |
+#              example
+#            until: '\r\n'
+#            timeout: 10ms
+#            require:
+#              content:
+#                text:
+#                  - match: [ '(example)' ]
 
 frontend:
   script:
