@@ -322,6 +322,64 @@ groups: # [array]  list of groups
                   - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
                     not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
 
+  - name: Dial
+    validate:
+      - name: Dial example
+        type: dial # defines validation of the dial-connection
+        # Each call creates new dial-connection with the given type and sending input as a data.
+        # Response will be read until the timeout will expire, or string `until` will be found in the response.
+        # Validation will be done on the content.
+        args:
+          - type: tcp            # [string, required] type of the dial-connection;
+            address: '127.0.0.1' # [string, required] valid address;
+            input: 'example'     # [string] this value will be given as input to the dial connect;
+            until: '\r\n\r\n'    # [string] content will be read until this string;
+            rn: true             # [bool] replace \n to the \r\n in the input string; (default: false)
+            timeout: 10s         # [duration] timeout for the connection; (default: 1s)
+            require: # [Validation] current block validates the result:
+              content: # [Content] validates the content by given assertions:
+                type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
+                length: # [Numeric] validates Content-Length of the response by given assertions:
+                  in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                  not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                  eq: 418       # [numeric] the investigated value should be equal to this value
+                  not: 500      # [numeric] the investigated value should not be equal to this value
+                  le: 600       # [numeric] the investigated value should be lesser than this value
+                  leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                  ge: 99        # [numeric] the investigated value should be greater than this value
+                  geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                json: # [list] list of JSON validators; each validator runs independent and can check different part of the content;
+                  - jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                    xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
+                      {
+                        "$id": "https://example.com/string.schema.json",
+                        "$schema": "http://json-schema.org/draft-07/schema#",
+                        "title": "Country",
+                        "type": {
+                          "type": "array",
+                          "items": [
+                            {
+                              "type": "string",
+                              "enum": ["NW", "NE", "SW", "SE"]
+                            }
+                          ]
+                        }
+                      }
+                html: # [list] list of HTML validators; each validator runs independent and can check different part of the content;
+                  - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                xml: # [list] list of XML validators; each validator runs independent and can check different part of the content;
+                  - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                    match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                text: # [list] list of Text validators; each validator runs independent and can check different part of the content;
+                  - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                    not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+
 frontend: # frontend part of configuration:
   script: # JS part of configuration:
     content: ~ # [string] given string will be included as a content in the <script> block;
