@@ -50,7 +50,7 @@ groups: # [array]  list of groups
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
               content: # [Content] validates the content of the response by given assertions:
                 type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                length:    # [Numeric] validates Content-Length of the response by given assertions:
+                length: # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
@@ -155,7 +155,7 @@ groups: # [array]  list of groups
                     geq: 100      # [numeric] the investigated value should be greater or equal than this value
                   content: # [Content] validates the content of the cell by given assertions:
                     type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                    length:    # [Numeric] validates Content-Length of the response by given assertions:
+                    length: # [Numeric] validates Content-Length of the response by given assertions:
                       in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                       not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                       eq: 418       # [numeric] the investigated value should be equal to this value
@@ -204,12 +204,12 @@ groups: # [array]  list of groups
         # Unusual - first argument respond for the validation,
         # and the second - account for the investigated validation.
         args:
-          - count: 5  # [numeric] count of investigations;
+          - count: 5  # [numeric, required] count of investigations;
             delay: 1s # [duration] delay between the requests;
-            require:  # [Validation] current block validates the result:
+            require: # [Validation] current block validates the result:
               success: 3 # [numeric] required count of success responses to consider response as `success`;
               warning: 1 # [numeric] required count of success responses to consider response as `warning`;
-          - type: http # investigated validation
+          - type: http # [validation, required] investigated validation;
             args:
               - method: GET
                 url: 'http://example.com/'
@@ -217,15 +217,17 @@ groups: # [array]  list of groups
   - name: Command
     validate:
       - name: Command example
-        type: cmd # todo
-        args: # todo
-          - command: [ "curl", "http://google.com" ] # todo
-            dir: "/var/www/"
-            input: 'example' # todo
-            env: # todo
-              FOO: bar # todo
+        type: cmd # defines validation of the command
+        # Command validation allows to run any console application and validates it output and exit code.
+        # Allows to run application with given arguments and input.
+        args:
+          - command: [ "curl", "http://google.com" ] # [list of strings, required] valid command;
+            dir: "/var/www/" # [string] directory where the command will run;
+            input: 'example' # [string] this value will be given as stdin to the command;
+            env: # [map: string to string] list of environment variables;
+              FOO: bar
             timeout: 10s  # [duration] timeout for the command; (default: 60s)
-            require:
+            require: # [Validation] current block validates the result:
               exit_code: # [Numeric] validates status code of the response by given assertions:
                 in: [ 1 ]     # [list of numeric] the investigated value should be in the list of these numbers
                 not_in: [ 0 ] # [list of numeric] the investigated value should not be in the list of these numbers
@@ -237,7 +239,7 @@ groups: # [array]  list of groups
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
               output: # [Content] validates the content of Stdout by given assertions:
                 type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                length:    # [Numeric] validates Content-Length of the response by given assertions:
+                length: # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
@@ -279,7 +281,7 @@ groups: # [array]  list of groups
                     not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
               stderr: # [Content] validates the content of Stderr by given assertions:
                 type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                length:    # [Numeric] validates Content-Length of the response by given assertions:
+                length: # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
