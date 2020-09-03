@@ -9,9 +9,9 @@ import (
 )
 
 type HttArgsRequire struct {
-	Status  *HttpArgsRequireStatus  `json:"status"`
-	Content *HttpArgsRequireContent `json:"content"`
-	Header  *HttpArgsRequireHeader  `json:"header"`
+	Status  *HttpArgsRequireStatus `json:"status"`
+	Content *RequireContent        `json:"content"`
+	Header  *HttpArgsRequireHeader `json:"header"`
 }
 
 func (a *HttArgsRequire) Validate() (err error) {
@@ -52,7 +52,7 @@ func (a *HttArgsRequire) Match(response *http.Response) (err error) {
 		if err != nil {
 			return fmt.Errorf("read: %w", err)
 		}
-		err = a.Content.Match(content)
+		err = a.Content.Match("content", content)
 		if err != nil {
 			return err
 		}

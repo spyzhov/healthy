@@ -13,7 +13,7 @@ func (app *Application) setSteps() (err error) {
 			var fn step.Function
 			fn, err = executor.Get(app.Executor, value.Type, value.Args)
 			if err != nil {
-				return fmt.Errorf("can't get validate function: %w", err)
+				return fmt.Errorf("can't get validate function for '%s'->'%s': %w", group.Name, value.Name, err)
 			}
 			app.StepGroups.Get(group.Name).Add(value.Name, fn)
 		}

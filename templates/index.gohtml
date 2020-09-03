@@ -61,17 +61,22 @@
     <hr/>
     {{$groups := .Groups}}
     {{range $groupID, $group := $groups.Names}}
-        <h2 id="title_{{$groupID}}">
-            {{$group}}
-            <span class="badge-group" id="counter_{{$groupID}}">
-                <span class="badge badge-success">0</span><span class="badge badge-warning">0</span><span
-                        class="badge badge-danger">0</span>
-            </span>
-        </h2>
+        <div class="row">
+            <h2 class="col-md-7" id="title_{{$groupID}}">
+                {{$group}}
+            </h2>
+            <div class="col-md-3 h2 text-center">
+                <span class="badge-group" id="counter_{{$groupID}}">
+                    <span class="badge badge-success">0</span><span class="badge badge-warning">0</span><span
+                            class="badge badge-danger">0</span>
+                </span>
+            </div>
+            <button type="button" class="btn btn-primary col-md-2 h2" data-group="{{$groupID}}" data-action="update_group">Group</button>
+        </div>
         <div class="accordion" id="accordion_{{$groupID}}">
             {{$steps := $groups.Get $group}}
             {{range $nameID, $name := $steps.Names}}
-                <div class="card" data-group="{{$group}}" data-name="{{$name}}" id="card_{{$groupID}}_{{$nameID}}">
+                <div class="card" data-group="{{$group}}" data-group_id="{{$groupID}}" data-name="{{$name}}" id="card_{{$groupID}}_{{$nameID}}">
                     <div class="card-header" id="heading_{{$groupID}}_{{$nameID}}">
                         <h3 class="mb-0">
                             <div class="input-group">
@@ -242,10 +247,27 @@
             next();
         }
 
+        function update_group() {
+            request_id = (new Date()).getTime();
+            let group = $(this).data('group'),
+                cards = $('.card[data-group_id=' + group + ']'),
+                current = request_id,
+                length = cards.length,
+                index = -1,
+                next = () => {
+                    index++
+                    if (index < length) {
+                        update($(cards.get(index)), current, next)
+                    } // else done
+                };
+            next();
+        }
+
         $('button.update').on("click", function () {
             update($(this).parents('.card'));
         })
         $('#update_all').on("click", update_all);
+        $('button[data-action=update_group]').on("click", update_group);
     })(jQuery)
 </script>
 {{if ne .Front.Script.Content ""}}
