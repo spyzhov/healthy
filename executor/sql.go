@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	_ "runtime/cgo"
 
 	"github.com/spyzhov/healthy/executor/internal"
 	. "github.com/spyzhov/healthy/executor/internal/args"
@@ -11,8 +12,12 @@ import (
 	"github.com/spyzhov/safe"
 
 	//	region drivers
+	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-adodb"
+	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/nakagami/firebirdsql"
 	//  endregion
 )
 

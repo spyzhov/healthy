@@ -110,8 +110,12 @@ groups: # [array]  list of groups
         # Be aware, that for different drivers used different packages and as the result:
         # different placeholders for the arguments.
         # List of packages:
-        #      mysql: "github.com/go-sql-driver/mysql"
-        #   postgres: "github.com/lib/pq"
+        #       mysql: "github.com/go-sql-driver/mysql"
+        #    postgres: "github.com/lib/pq"
+        #     sqlite3: "github.com/mattn/go-sqlite3"
+        #       mssql: "github.com/denisenkom/go-mssqldb"
+        # firebirdsql: "github.com/nakagami/firebirdsql"
+        #       adodb: "github.com/mattn/go-adodb"
         args:
           - driver: postgres # todo
             url: "postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable" # todo
