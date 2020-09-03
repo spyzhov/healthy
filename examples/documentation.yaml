@@ -50,7 +50,7 @@ groups: # [array]  list of groups
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
               content: # [Content] validates the content of the response by given assertions:
                 type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                length: # [Numeric] validates Content-Length of the response by given assertions:
+                length:    # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
@@ -117,11 +117,11 @@ groups: # [array]  list of groups
         # firebirdsql: "github.com/nakagami/firebirdsql"
         #       adodb: "github.com/mattn/go-adodb"
         args:
-          - driver: postgres # todo
-            url: "postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable" # todo
-            sql: 'SELECT $1' # todo
-            args: [ 1 ] # todo
-            require: # todo
+          - driver: postgres # [string, required] valid sql-driver from the supported list;
+            url: "postgres://login:password@postgres:5432/db?sslmode=disable" # [string, required] valid connection URL, check it in the source package;
+            sql: 'SELECT $1' # [string, required] SQL request valid for selected driver;
+            args: [ 1 ] # [list] list of arguments for the requests;
+            require: # [Validation] current block validates the result:
               count: # [Numeric] validates count of the rows in the given result:
                 in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                 not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
@@ -131,19 +131,19 @@ groups: # [array]  list of groups
                 leq: 599      # [numeric] the investigated value should be lesser or equal than this value
                 ge: 99        # [numeric] the investigated value should be greater than this value
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
-              rows: # todo
-                - [ 1, 2, 3 ] # todo
-                - [ 4, 'NULL', 6 ] # todo
-              row: # todo
-                - row: 0 # todo
-                  value: [ 1, 2, 3 ] # todo
-              column: # todo
-                - column: 1 # todo
-                  value: [ 2, 'NULL' ] # todo
-              value: # todo
-                - row: 1 # todo
-                  column: 2 # todo
-                  is_null: false # todo
+              rows: # [table] validation of the response, full set of values;
+                - [ 1, 2, 3 ]      # [Row] all rows should be a list in the same size;
+                - [ 4, 'NULL', 6 ] # [Row] if the value is NULL, set is as a string to compare;
+              row: # [list of validators] validates one row by value;
+                - row: 0             # [numeric] row number;
+                  value: [ 1, 2, 3 ] # [Row] list of values, which will be compared with result row;
+              column: # [list of validators] validates one column by value;
+                - column: 1            # [numeric] column number;
+                  value: [ 2, 'NULL' ] # [Column] list of values, which will be compared with result column;
+              value: # [list of validators] validates one cell by value;
+                - row: 1         # [numeric] row number;
+                  column: 2      # [numeric] column number;
+                  is_null: false # [bool] simple validate value to be NULL;
                   numeric: # [Numeric] validates count of the rows in the given result:
                     in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                     not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
@@ -155,7 +155,7 @@ groups: # [array]  list of groups
                     geq: 100      # [numeric] the investigated value should be greater or equal than this value
                   content: # [Content] validates the content of the cell by given assertions:
                     type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                    length: # [Numeric] validates Content-Length of the response by given assertions:
+                    length:    # [Numeric] validates Content-Length of the response by given assertions:
                       in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                       not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                       eq: 418       # [numeric] the investigated value should be equal to this value
@@ -199,15 +199,18 @@ groups: # [array]  list of groups
   - name: Repeat
     validate:
       - name: Repeat example
-        type: repeat # todo
-        args: # todo
-          - count: 5 # todo
-            delay: 1s # todo
-            require: # todo
-              success: 3 # todo
-              warning: 1 # todo
-          - type: http # todo
-            args: # todo
+        type: repeat # defines validation of the repeatable request
+        # Run requests and validation several times with a given delay between requests.
+        # Unusual - first argument respond for the validation,
+        # and the second - account for the investigated validation.
+        args:
+          - count: 5  # [numeric] count of investigations;
+            delay: 1s # [duration] delay between the requests;
+            require:  # [Validation] current block validates the result:
+              success: 3 # [numeric] required count of success responses to consider response as `success`;
+              warning: 1 # [numeric] required count of success responses to consider response as `warning`;
+          - type: http # investigated validation
+            args:
               - method: GET
                 url: 'http://example.com/'
 
@@ -234,7 +237,7 @@ groups: # [array]  list of groups
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
               output: # [Content] validates the content of Stdout by given assertions:
                 type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                length: # [Numeric] validates Content-Length of the response by given assertions:
+                length:    # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
@@ -276,7 +279,7 @@ groups: # [array]  list of groups
                     not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
               stderr: # [Content] validates the content of Stderr by given assertions:
                 type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
-                length: # [Numeric] validates Content-Length of the response by given assertions:
+                length:    # [Numeric] validates Content-Length of the response by given assertions:
                   in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                   not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                   eq: 418       # [numeric] the investigated value should be equal to this value
