@@ -383,9 +383,13 @@ groups: # [array]  list of groups
   - name: 'App/Consul'
     validate:
       - name: Consul example
-        type: app/consul # todo
+        type: app/consul # defines validation of the Consul Application
+        # Defines validations related to Consul.
+        # Search and validate Key in KV storage.
+        # Search and validate Service in Services list.
+        # Used a default API package: "github.com/hashicorp/consul/api"
         args:
-          - config: # todo
+          - config: # [object] config for the Consul API;
               address: '127.0.0.1:8500' # [string]
               scheme: http     # [string]
               datacenter: ''   # [string]
@@ -406,9 +410,9 @@ groups: # [array]  list of groups
                 key_file: 'key_file.key'    # [string]
                 key_pem: 'binary string'    # [binary string]
                 insecure_skip_verify: false # [bool]
-            require: # todo
-              key: # todo
-                foo/bar/baz: # [Content] validates the content by given assertions:
+            require: # [Validation] current block validates different parts of result:
+              key: # [map: string to Content] search for key in Consul KV and validates it by given assertions;
+                foo/bar/baz: # [Content] validates the value of Key[foo/bar/baz] by given assertions:
                   type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
                   length: # [Numeric] validates Content-Length of the response by given assertions:
                     in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
@@ -450,11 +454,11 @@ groups: # [array]  list of groups
                   text: # [list] list of Text validators; each validator runs independent and can check different part of the content;
                     - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
                       not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
-              service: # todo
-                service_name: # todo
-                  tags: [ "grpc" ] # todo
-                  exist: true # todo
-                  healthy: true # todo
+              service: # [map: string to Service] search for service in Consul Services and validates it by given assertions;
+                service_name: # [Service] search service_name as service and validates it by given assertions:
+                  tags: [ "grpc" ] # [list of strings] service will be searched by given service name and tags;
+                  exist: true      # [bool] will assert service as exist in Consul;
+                  healthy: true    # [bool] will assert service as healthy in Consul;
 
 frontend: # frontend part of configuration:
   script: # JS part of configuration:
