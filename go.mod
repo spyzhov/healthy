@@ -11,6 +11,8 @@ require (
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gobuffalo/packr/v2 v2.8.0
+	github.com/hashicorp/consul/api v1.6.0
+	github.com/hashicorp/go-cleanhttp v0.5.1
 	github.com/lib/pq v1.8.0
 	github.com/mattn/go-adodb v0.0.1
 	github.com/mattn/go-sqlite3 v1.14.2
@@ -23,5 +25,5 @@ require (
 	github.com/xeipuuv/gojsonschema v1.2.0
 	go.uber.org/zap v1.14.1
 	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd
-	gopkg.in/yaml.v2 v2.2.5
+	gopkg.in/yaml.v2 v2.2.8
 )
