@@ -380,6 +380,82 @@ groups: # [array]  list of groups
                   - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
                     not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
 
+  - name: 'App/Consul'
+    validate:
+      - name: Consul example
+        type: app/consul # todo
+        args:
+          - config: # todo
+              address: '127.0.0.1:8500' # [string]
+              scheme: http     # [string]
+              datacenter: ''   # [string]
+              http_auth: # [object]
+                username: fido # [string]
+                password: cola # [string]
+              wait_time: 10    # [numeric]
+              token: 'access_token'   # [string]
+              token_file: 'file_name' # [string]
+              namespace: 'ns'         # [string]
+              tls_config: # [object]
+                address: 'tls_address'      # [string]
+                ca_file: 'ca_file.ca'       # [string]
+                ca_path: '/root'            # [string]
+                ca_pem: 'binary string'     # [binary string]
+                cert_file: 'cert_file.cr'   # [string]
+                cert_pem: 'binary string'   # [binary string]
+                key_file: 'key_file.key'    # [string]
+                key_pem: 'binary string'    # [binary string]
+                insecure_skip_verify: false # [bool]
+            require: # todo
+              key: # todo
+                foo/bar/baz: # [Content] validates the content by given assertions:
+                  type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
+                  length: # [Numeric] validates Content-Length of the response by given assertions:
+                    in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                    not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                    eq: 418       # [numeric] the investigated value should be equal to this value
+                    not: 500      # [numeric] the investigated value should not be equal to this value
+                    le: 600       # [numeric] the investigated value should be lesser than this value
+                    leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                    ge: 99        # [numeric] the investigated value should be greater than this value
+                    geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                  json: # [list] list of JSON validators; each validator runs independent and can check different part of the content;
+                    - jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                      xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                      match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                      jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
+                        {
+                          "$id": "https://example.com/string.schema.json",
+                          "$schema": "http://json-schema.org/draft-07/schema#",
+                          "title": "Country",
+                          "type": {
+                            "type": "array",
+                            "items": [
+                              {
+                                "type": "string",
+                                "enum": ["NW", "NE", "SW", "SE"]
+                              }
+                            ]
+                          }
+                        }
+                  html: # [list] list of HTML validators; each validator runs independent and can check different part of the content;
+                    - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                      match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                  xml: # [list] list of XML validators; each validator runs independent and can check different part of the content;
+                    - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                      match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                  text: # [list] list of Text validators; each validator runs independent and can check different part of the content;
+                    - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+              service: # todo
+                service_name: # todo
+                  tags: [ "grpc" ] # todo
+                  exist: true # todo
+                  healthy: true # todo
+
 frontend: # frontend part of configuration:
   script: # JS part of configuration:
     content: ~ # [string] given string will be included as a content in the <script> block;

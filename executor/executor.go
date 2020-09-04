@@ -68,7 +68,7 @@ func Get(e *Executor, name string, args []interface{}) (step.Function, error) {
 }
 
 func getMethodName(name string) string {
-	return strings.ReplaceAll(strings.Title(name), " ", "")
+	return strings.ReplaceAll(strings.Title(strings.ReplaceAll(strings.Title(name), "/", " ")), " ", "")
 }
 
 func getMethodNames(e *Executor) []string {
