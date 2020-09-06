@@ -2,7 +2,11 @@ version: 1          # API version
 name: Project name  # [string] name of current project
 groups: # [array]  list of groups
 
-  - name: Simple    # [string, unique] name of current group
+  - name: Simple # [string, unique] name of current group
+    variables:   # [list of Variables]
+      - name: VARIABLE_NAME # [string] local variable name;
+        value: ${VAR_NAME}  # [string] local variable value;
+        masked: true        # [bool] this flag will hide value from the output;
     validate: # [array]  list of steps, what should be validated
       - name: Success # [string] name of current step
         type: simple  # [string] type of current step;

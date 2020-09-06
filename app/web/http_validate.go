@@ -54,14 +54,8 @@ func (app *Application) httpValidate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var res *Result
-	res, err = step.Func()
-	if err != nil {
-		write(w, &response{
-			Message: fmt.Sprintf("error: %s ", err.Error()),
-			Level:   Error,
-		})
-	} else if res != nil {
+	res := step.Call()
+	if res != nil {
 		write(w, &response{
 			Message: res.Message,
 			Level:   res.Status,

@@ -23,15 +23,12 @@ func (s *Steps) Names() []string {
 	return s.names
 }
 
-func (s *Steps) Add(name string, test Function) *Steps {
+func (s *Steps) Add(name string, test Function, masked []string) *Steps {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.names = append(s.names, name)
 	s.index[name] = len(s.steps)
-	s.steps = append(s.steps, &Step{
-		Name: name,
-		Func: test,
-	})
+	s.steps = append(s.steps, NewStep(name, test, masked))
 	return s
 }
 

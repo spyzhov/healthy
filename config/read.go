@@ -15,7 +15,6 @@ const (
 )
 
 func NewConfig(content []byte) (*Config, error) {
-	content = dereference(content)
 	values := make(map[interface{}]interface{})
 	err := yaml.Unmarshal(content, &values)
 	version, ok := values["version"]

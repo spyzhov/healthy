@@ -10,14 +10,21 @@ groups:
             message: Simple error
       - name: 'Simple: warning'
         type: simple
+        variables:
+            - name: MASKED
+              value: secret
+              masked: true
         args:
           - status: warning
-            message: Simple warning
+            message: 'Simple warning: $MASKED'
       - name: 'Simple: success'
         type: simple
+        variables:
+          - name: STATUS
+            value: success
         args:
-          - status: success
-            message: Simple success
+          - status: ${STATUS}
+            message: Simple ${STATUS}
       - name: 'Simple: wait for success'
         type: simple
         args:
@@ -103,6 +110,24 @@ groups:
                     JSON:
                       - jsonpath: '$.datetime'
                         match: [ '(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d[1,3,5,7,9]\.\d+\+\d{2}:\d{2})' ]
+      - name: Masked retry
+        type: repeat
+        variables:
+            - name: MASK
+              value: retry
+              masked: true
+            - name: COUNT
+              value: 3
+        args:
+          - count: 3 # $COUNT
+          - type: simple
+            variables:
+                - name: MASKED
+                  value: Masked
+                  masked: true
+            args:
+              - status: success
+                message: '$MASKED success: ${MASK}'
 
   - name: Database
     validate:

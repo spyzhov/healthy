@@ -7,13 +7,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"runtime/debug"
 	"strings"
 	"sync"
 
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
-	"go.uber.org/zap"
 )
 
 type Executor struct {
@@ -80,6 +78,7 @@ func getMethodNames(e *Executor) []string {
 	return result
 }
 
+// fixme
 func getMethodArguments(name string, method *reflect.Value, args []interface{}) (argv []reflect.Value, err error) {
 	t := method.Type()
 	if len(args) > t.NumIn() {
@@ -89,7 +88,7 @@ func getMethodArguments(name string, method *reflect.Value, args []interface{}) 
 	argv = make([]reflect.Value, t.NumIn())
 	for i := range argv {
 		buf.Reset()
-		value := reflect.New(t.In(i).Elem()).Interface()
+		value := reflect.New(t.In(i).Elem()).Interface() // todo
 		if len(args) > i {
 			if err = json.NewEncoder(buf).Encode(args[i]); err != nil {
 				return nil, err
@@ -101,16 +100,6 @@ func getMethodArguments(name string, method *reflect.Value, args []interface{}) 
 		argv[i] = reflect.ValueOf(value)
 	}
 	return argv, nil
-}
-
-func call(fn step.Function) (res *step.Result, err error) {
-	defer func() {
-		if rec := recover(); rec != nil {
-			zap.L().Error("recover panic", zap.Any("recover", rec), zap.ByteString("stack", debug.Stack()))
-			err = fmt.Errorf("panic: %v", rec)
-		}
-	}()
-	return fn()
 }
 
 // region Executor
