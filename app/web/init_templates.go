@@ -14,15 +14,19 @@ func (app *Application) setTemplates() (err error) {
 	// region Templates functions
 	functions := template.FuncMap{
 		"attr": func(s string) template.HTMLAttr {
+			// #nosec G203
 			return template.HTMLAttr(s)
 		},
 		"html": func(s string) template.HTML {
+			// #nosec G203
 			return template.HTML(s)
 		},
 		"style": func(s string) template.CSS {
+			// #nosec G203
 			return template.CSS(s)
 		},
 		"script": func(s string) template.JS {
+			// #nosec G203
 			return template.JS(s)
 		},
 	}
