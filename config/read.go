@@ -26,6 +26,7 @@ func NewConfig(content []byte) (*Config, error) {
 	switch intVersion(version) {
 	case version1:
 		config := new(Config)
+		// err = read(values, &config)
 		err = custom.Unmarshal([]string{"config"}, &config, normalize(values))
 		return config, safe.Wrap(err, "cannot read config")
 	default:
