@@ -33,6 +33,7 @@ func (e *Executor) Repeat(args *RepeatArgs, cmd *config.Step) (step.Function, er
 	if err != nil {
 		return nil, safe.Wrap(err, "repeat")
 	}
+	test := step.NewStep("repeat", fn, cmd.Vars.Masked())
 
 	return func() (*step.Result, error) {
 		success := Uint(0)
@@ -42,14 +43,10 @@ func (e *Executor) Repeat(args *RepeatArgs, cmd *config.Step) (step.Function, er
 			if i != 0 && args.Delay.Duration != 0 {
 				time.Sleep(args.Delay.Duration)
 			}
-			res, err := call(fn)
-			if err != nil {
-				messages = append(messages, fmt.Sprintf(format, i+1, args.Count, step.Error, err.Error()))
-			} else {
-				messages = append(messages, fmt.Sprintf(format, i+1, args.Count, res.Status, res.Message))
-				if res.Status == step.Success {
-					success++
-				}
+			res := test.Call()
+			messages = append(messages, fmt.Sprintf(format, i+1, args.Count, res.Status, res.Message))
+			if res.Status == step.Success {
+				success++
 			}
 		}
 

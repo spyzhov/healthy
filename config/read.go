@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/spyzhov/healthy/helper"
+	custom "github.com/spyzhov/healthy/internal"
 	"github.com/spyzhov/safe"
 	"gopkg.in/yaml.v2"
 )
@@ -15,7 +16,6 @@ const (
 )
 
 func NewConfig(content []byte) (*Config, error) {
-	content = dereference(content)
 	values := make(map[interface{}]interface{})
 	err := yaml.Unmarshal(content, &values)
 	version, ok := values["version"]
@@ -26,7 +26,9 @@ func NewConfig(content []byte) (*Config, error) {
 	switch intVersion(version) {
 	case version1:
 		config := new(Config)
-		return config, safe.Wrap(read(values, config), "cannot read config")
+		// err = read(values, &config)
+		err = custom.Unmarshal([]string{"config"}, &config, normalize(values))
+		return config, safe.Wrap(err, "cannot read config")
 	default:
 		return nil, fmt.Errorf("unknown config version: %v", version)
 	}

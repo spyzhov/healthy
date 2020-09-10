@@ -142,6 +142,7 @@
 | github.com/hashicorp/go-hclog | [v0.12.0](https://pkg.go.dev/github.com/hashicorp/go-hclog@v0.12.0?tab=licenses) |
 | github.com/hashicorp/go-syslog | [v1.0.0](https://pkg.go.dev/github.com/hashicorp/go-syslog@v1.0.0?tab=licenses) |
 | github.com/hashicorp/mdns | [v1.0.1](https://pkg.go.dev/github.com/hashicorp/mdns@v1.0.1?tab=licenses) |
+| github.com/iancoleman/strcase | [v0.1.1](https://pkg.go.dev/github.com/iancoleman/strcase@v0.1.1?tab=licenses) |
 | github.com/json-iterator/go | [v1.1.10](https://pkg.go.dev/github.com/json-iterator/go@v1.1.10?tab=licenses) <br /> [v1.1.6](https://pkg.go.dev/github.com/json-iterator/go@v1.1.6?tab=licenses) |
 | github.com/kisielk/errcheck | [v1.1.0](https://pkg.go.dev/github.com/kisielk/errcheck@v1.1.0?tab=licenses) |
 | github.com/kisielk/gotool | [v1.0.0](https://pkg.go.dev/github.com/kisielk/gotool@v1.0.0?tab=licenses) |

@@ -1,19 +1,16 @@
 package executor
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"reflect"
-	"runtime/debug"
 	"strings"
 	"sync"
 
+	"github.com/spyzhov/healthy/internal"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
-	"go.uber.org/zap"
 )
 
 type Executor struct {
@@ -85,32 +82,17 @@ func getMethodArguments(name string, method *reflect.Value, args []interface{}) 
 	if len(args) > t.NumIn() {
 		return nil, fmt.Errorf("method %s should have no more than %d arguments", name, t.NumIn())
 	}
-	buf := bytes.NewBuffer(make([]byte, 0, 64))
 	argv = make([]reflect.Value, t.NumIn())
 	for i := range argv {
-		buf.Reset()
 		value := reflect.New(t.In(i).Elem()).Interface()
 		if len(args) > i {
-			if err = json.NewEncoder(buf).Encode(args[i]); err != nil {
-				return nil, err
-			}
-			if err = json.NewDecoder(buf).Decode(&value); err != nil {
+			if err = internal.Unmarshal([]string{"args"}, &value, args[i]); err != nil {
 				return nil, err
 			}
 		}
 		argv[i] = reflect.ValueOf(value)
 	}
 	return argv, nil
-}
-
-func call(fn step.Function) (res *step.Result, err error) {
-	defer func() {
-		if rec := recover(); rec != nil {
-			zap.L().Error("recover panic", zap.Any("recover", rec), zap.ByteString("stack", debug.Stack()))
-			err = fmt.Errorf("panic: %v", rec)
-		}
-	}()
-	return fn()
 }
 
 // region Executor

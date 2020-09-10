@@ -15,7 +15,7 @@ func (app *Application) setSteps() (err error) {
 			if err != nil {
 				return fmt.Errorf("can't get validate function for '%s'->'%s': %w", group.Name, value.Name, err)
 			}
-			app.StepGroups.Get(group.Name).Add(value.Name, fn)
+			app.StepGroups.Get(group.Name).Add(value.Name, fn, value.Vars.Masked())
 		}
 	}
 	// Example:
