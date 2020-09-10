@@ -202,8 +202,11 @@ groups:
 
 frontend:
   script:
-    content: ~
+    content: |
+      // example:
+      console.log("loaded");
     files: [ ]
   style:
-    content: ~
+    content: |
+      body {} // example
     files: [ ] # Example: ['https://stackpath.bootstrapcdn.com/bootswatch/4.5.0/slate/bootstrap.min.css']
