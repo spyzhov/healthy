@@ -630,6 +630,11 @@ func TestTypeToString(t *testing.T) {
 			tp:   reflect.TypeOf(new(string)),
 			want: "*string",
 		},
+		{
+			name: "*TestCustom",
+			tp:   reflect.TypeOf(new(TestCustom)),
+			want: "*TestCustom",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

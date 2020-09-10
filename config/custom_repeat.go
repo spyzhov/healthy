@@ -1,6 +1,8 @@
 package config
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 func stepDereference(value interface{}, vars map[string]string) (result interface{}, err error) {
 	var (

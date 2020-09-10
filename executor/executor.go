@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/spyzhov/healthy/executor/internal"
+	"github.com/spyzhov/healthy/internal"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )

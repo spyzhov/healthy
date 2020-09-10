@@ -33,11 +33,11 @@ func (e *Executor) Http(args *HttpArgs) (step.Function, error) {
 	if err := args.Validate(); err != nil {
 		return nil, safe.Wrap(err, "http")
 	}
-	client := func(timeout time.Duration) *http.Client {
-		if timeout == 0 {
-			timeout = 30 * time.Second
-		}
-		result := http2.GetClient(timeout, e.version)
+	if args.Timeout.Duration == 0 {
+		args.Timeout.Duration = 30 * time.Second
+	}
+	client := func() *http.Client {
+		result := http2.GetClient(args.Timeout.Duration, e.version)
 		if args.Redirect {
 			return result
 		}
@@ -68,7 +68,7 @@ func (e *Executor) Http(args *HttpArgs) (step.Function, error) {
 		// endregion
 		// region Response
 		var response *http.Response
-		response, err = client(args.Timeout.Duration).Do(request.WithContext(e.ctx))
+		response, err = client().Do(request.WithContext(e.ctx))
 		if err != nil {
 			return nil, fmt.Errorf("http: %w", err)
 		}

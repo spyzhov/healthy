@@ -38,8 +38,8 @@ func Unmarshal(path []string, target interface{}, value interface{}) (err error)
 	kind := indi.Kind()
 	New := reflect.New(indi.Type())
 	// endregion
-	unmarshaler, ok := New.Interface().(json.Unmarshaler)
 	// region Unmarshaler
+	unmarshaler, ok := New.Interface().(json.Unmarshaler)
 	if ok {
 		var data []byte
 		if data, err = json.Marshal(value); err != nil {
@@ -180,18 +180,18 @@ func Unmarshal(path []string, target interface{}, value interface{}) (err error)
 				iface = value
 				sPath = path
 			} else {
-				name := getName(field)
-				if name == "-" {
-					continue
-				}
-				index := val.MapIndex(reflect.ValueOf(name))
-				if index.IsValid() {
-					iface = index.Interface()
+				names := getNames(field)
+				for _, name := range names {
+					index := val.MapIndex(reflect.ValueOf(name))
+					if index.IsValid() {
+						iface = index.Interface()
+						sPath = append(path, name)
+						break
+					}
 				}
 				if safe.IsNil(iface) { // default?
 					continue
 				}
-				sPath = append(path, name)
 			}
 			fVal := reflect.New(field.Type).Elem().Interface()
 			err = Unmarshal(sPath, &fVal, iface)
@@ -200,7 +200,7 @@ func Unmarshal(path []string, target interface{}, value interface{}) (err error)
 			}
 			tStruct.Field(i).Set(reflect.ValueOf(fVal))
 		}
-		elem.Set(tStruct)
+		base(elem).Set(base(tStruct))
 		return nil
 	case reflect.Ptr:
 		val := reflect.New(indi.Type().Elem())
@@ -233,17 +233,25 @@ func Unmarshal(path []string, target interface{}, value interface{}) (err error)
 	return nil
 }
 
-func getName(field reflect.StructField) string {
+func getNames(field reflect.StructField) []string {
+	names := make([]string, 0, 4)
 	name := field.Tag.Get("name")
 	if name != "" {
-		return name
+		if name == "-" {
+			return make([]string, 0)
+		}
+		names = append(names, name)
 	}
 	name = field.Tag.Get("json")
 	if name != "" {
 		parts := strings.Split(name, ",")
-		return parts[0]
+		if parts[0] == "-" {
+			return make([]string, 0)
+		}
+		names = append(names, parts[0])
 	}
-	return strcase.ToSnake(field.Name)
+	names = append(names, strcase.ToSnake(field.Name), field.Name)
+	return names
 }
 
 func getValue(value interface{}) interface{} {
@@ -256,6 +264,13 @@ func getValue(value interface{}) interface{} {
 			return val.Interface()
 		}
 	}
+}
+
+func base(val reflect.Value) reflect.Value {
+	for val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+	return val
 }
 
 func (t *InvalidType) Error() string {
