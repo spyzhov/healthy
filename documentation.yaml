@@ -3,15 +3,15 @@ name: Project name  # [string] name of current project
 groups: # [array]  list of groups
 
   - name: Simple # [string, unique] name of current group
-    variables:   # [list of Variables]
-      - name: VARIABLE_NAME # [string] local variable name;
-        value: ${VAR_NAME}  # [string] local variable value;
-        masked: true        # [bool] this flag will hide value from the output;
     validate: # [array]  list of steps, what should be validated
       - name: Success # [string] name of current step
         type: simple  # [string] type of current step;
         # Simple step used only for internal tests and will return given status result with the message.
         # If field sleep is set - response will be given after given duration.
+        variables:   # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args: # [array] arguments related to current type of step
           - status: success         # [string, enum: error, warning, success, required] expected status;
             message: Simple success # [string] result message
@@ -24,6 +24,10 @@ groups: # [array]  list of groups
         # HTTP validation doing the usual HTTP request with the given parameters and validate the response.
         # Only `URL` is required parameter, all others are optional.
         # The default value of the `method` parameter is `GET`.
+        variables: # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args:
           - method: GET # [string, enum: http.Methods] HTTP method of the request;
             url: 'http://example.com' # [string, required] full URL of the request;
@@ -120,6 +124,10 @@ groups: # [array]  list of groups
         #       mssql: "github.com/denisenkom/go-mssqldb"
         # firebirdsql: "github.com/nakagami/firebirdsql"
         #       adodb: "github.com/mattn/go-adodb"
+        variables: # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args:
           - driver: postgres # [string, required] valid sql-driver from the supported list;
             url: "postgres://login:password@postgres:5432/db?sslmode=disable" # [string, required] valid connection URL, check it in the source package;
@@ -207,6 +215,10 @@ groups: # [array]  list of groups
         # Run requests and validation several times with a given delay between requests.
         # Unusual - first argument respond for the validation,
         # and the second - account for the investigated validation.
+        variables: # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args:
           - count: 5  # [numeric, required] count of investigations;
             delay: 1s # [duration] delay between the requests;
@@ -214,6 +226,10 @@ groups: # [array]  list of groups
               success: 3 # [numeric] required count of success responses to consider response as `success`;
               warning: 1 # [numeric] required count of success responses to consider response as `warning`;
           - type: http # [validation, required] investigated validation;
+            variables: # [list of Variables]
+              - name: VARIABLE_NAME # [string] local variable name;
+                value: ${VAR_NAME}  # [string] local variable value;
+                masked: true        # [bool] this flag will hide value from the output;
             args:
               - method: GET
                 url: 'http://example.com/'
@@ -224,6 +240,10 @@ groups: # [array]  list of groups
         type: cmd # defines validation of the command
         # Command validation allows to run any console application and validates it output and exit code.
         # Allows to run application with given arguments and input.
+        variables: # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args:
           - command: [ "curl", "http://google.com" ] # [list of strings, required] valid command;
             dir: "/var/www/" # [string] directory where the command will run;
@@ -333,6 +353,10 @@ groups: # [array]  list of groups
         # Each call creates new dial-connection with the given type and sending input as a data.
         # Response will be read until the timeout will expire, or string `until` will be found in the response.
         # Validation will be done on the content.
+        variables: # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args:
           - type: tcp            # [string, required] type of the dial-connection;
             address: '127.0.0.1' # [string, required] valid address;
@@ -392,6 +416,10 @@ groups: # [array]  list of groups
         # Search and validate Key in KV storage.
         # Search and validate Service in Services list.
         # Used a default API package: "github.com/hashicorp/consul/api"
+        variables: # [list of Variables]
+          - name: VARIABLE_NAME # [string] local variable name;
+            value: ${VAR_NAME}  # [string] local variable value;
+            masked: true        # [bool] this flag will hide value from the output;
         args:
           - config: # [object] config for the Consul API;
               address: '127.0.0.1:8500' # [string]

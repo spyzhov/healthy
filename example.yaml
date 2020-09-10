@@ -119,7 +119,7 @@ groups:
             - name: COUNT
               value: 3
         args:
-          - count: 3 # $COUNT
+          - count: $COUNT
           - type: simple
             variables:
                 - name: MASKED

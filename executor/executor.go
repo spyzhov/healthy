@@ -1,15 +1,14 @@
 package executor
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"reflect"
 	"strings"
 	"sync"
 
+	"github.com/spyzhov/healthy/executor/internal"
 	"github.com/spyzhov/healthy/step"
 	"github.com/spyzhov/safe"
 )
@@ -78,22 +77,16 @@ func getMethodNames(e *Executor) []string {
 	return result
 }
 
-// fixme
 func getMethodArguments(name string, method *reflect.Value, args []interface{}) (argv []reflect.Value, err error) {
 	t := method.Type()
 	if len(args) > t.NumIn() {
 		return nil, fmt.Errorf("method %s should have no more than %d arguments", name, t.NumIn())
 	}
-	buf := bytes.NewBuffer(make([]byte, 0, 64))
 	argv = make([]reflect.Value, t.NumIn())
 	for i := range argv {
-		buf.Reset()
-		value := reflect.New(t.In(i).Elem()).Interface() // todo
+		value := reflect.New(t.In(i).Elem()).Interface()
 		if len(args) > i {
-			if err = json.NewEncoder(buf).Encode(args[i]); err != nil {
-				return nil, err
-			}
-			if err = json.NewDecoder(buf).Decode(&value); err != nil {
+			if err = internal.Unmarshal([]string{"args"}, &value, args[i]); err != nil {
 				return nil, err
 			}
 		}
