@@ -14,6 +14,7 @@ type Application struct {
 	Http       *http.ServeMux
 	Management *http.ServeMux
 	templates  map[string]*template.Template
+	favicon    []byte
 }
 
 func New() (web *Application, err error) {

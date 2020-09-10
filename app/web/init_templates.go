@@ -11,8 +11,26 @@ import (
 func (app *Application) setTemplates() (err error) {
 	box := packr.New("templates", "../../templates")
 	app.templates = make(map[string]*template.Template)
+	// region Templates functions
+	functions := template.FuncMap{
+		"attr": func(s string) template.HTMLAttr {
+			return template.HTMLAttr(s)
+		},
+		"html": func(s string) template.HTML {
+			return template.HTML(s)
+		},
+		"style": func(s string) template.CSS {
+			return template.CSS(s)
+		},
+		"script": func(s string) template.JS {
+			return template.JS(s)
+		},
+	}
+	// endregion
 	// region Init templates
-	app.templates["index"], err = template.New("index").Parse(safe.Must(box.FindString("index.gohtml")).(string))
+	app.templates["index"], err = template.New("index").
+		Funcs(functions).
+		Parse(safe.Must(box.FindString("index.gohtml")).(string))
 	if err != nil {
 		return err
 	}

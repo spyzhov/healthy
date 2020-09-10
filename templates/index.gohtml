@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Healthy: {{.Name}}</title>
+    <link rel='icon' href='favicon.ico' type='image/x-icon' sizes="16x16" />
     <!-- CSS only -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.1/css/bootstrap.min.css"
           integrity="sha384-VCmXjywReHh4PwowAiWNagnWcLhlEJLA5buUprzK8rxFgeH0kww/aWY76TfkUoSX" crossorigin="anonymous">
@@ -42,7 +43,7 @@
         }
 {{if ne .Front.Style.Content ""}}
         // Custom style
-        {{.Front.Style.Content}}
+        {{.Front.Style.Content|style}}
 {{end}}
     </style>
 </head>
@@ -273,7 +274,7 @@
 {{if ne .Front.Script.Content ""}}
 <script>
     // Custom script
-    {{.Front.Script.Content}}
+    {{.Front.Script.Content|script}}
 </script>
 {{end}}
 </body>
