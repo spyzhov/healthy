@@ -11,9 +11,9 @@ groups:
       - name: 'Simple: warning'
         type: simple
         variables:
-            - name: MASKED
-              value: secret
-              masked: true
+          - name: MASKED
+            value: secret
+            masked: true
         args:
           - status: warning
             message: 'Simple warning: $MASKED'
@@ -113,18 +113,18 @@ groups:
       - name: Masked retry
         type: repeat
         variables:
-            - name: MASK
-              value: retry
-              masked: true
-            - name: COUNT
-              value: 3
+          - name: MASK
+            value: retry
+            masked: true
+          - name: COUNT
+            value: 3
         args:
           - count: $COUNT
           - type: simple
             variables:
-                - name: MASKED
-                  value: Masked
-                  masked: true
+              - name: MASKED
+                value: Masked
+                masked: true
             args:
               - status: success
                 message: '$MASKED success: ${MASK}'
@@ -141,8 +141,9 @@ groups:
               count:
                 eq: 1
               rows:
-                - [ 1 ]
-              value:
+                value:
+                  - [ 1 ]
+              cell:
                 - row: 0
                   column: 0
                   numeric:
@@ -156,7 +157,8 @@ groups:
             require:
               count:
                 eq: 1
-              is_null: false
+              rows:
+                is_null: false
 
   - name: Other
     validate:

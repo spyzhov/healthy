@@ -4,10 +4,10 @@ import "github.com/spyzhov/safe"
 
 type SqlArgsRequire struct {
 	Count  RequireNumeric        `json:"count"`
-	Rows   Table                 `json:"rows"`
+	Rows   SqlArgsRequireTable   `json:"rows"`
 	Row    SqlArgsRequireRows    `json:"row"`
 	Column SqlArgsRequireColumns `json:"column"`
-	Value  SqlArgsRequireValues  `json:"value"`
+	Cell   SqlArgsRequireCells   `json:"cell"`
 }
 
 func (a *SqlArgsRequire) Validate() (err error) {
@@ -26,7 +26,7 @@ func (a *SqlArgsRequire) Validate() (err error) {
 	if err = a.Column.Validate(); err != nil {
 		return err
 	}
-	if err = a.Value.Validate(); err != nil {
+	if err = a.Cell.Validate(); err != nil {
 		return safe.Wrap(err, "value")
 	}
 	return nil
@@ -42,7 +42,7 @@ func (a *SqlArgsRequire) Match(rows Table) (err error) {
 	if err = a.Count.Match("count", float64(len(rows))); err != nil {
 		return err
 	}
-	if err = a.Rows.Match(rows, "NULL"); err != nil {
+	if err = a.Rows.Match(rows); err != nil {
 		return safe.Wrap(err, "rows")
 	}
 	if err = a.Row.Match(rows); err != nil {
@@ -51,7 +51,7 @@ func (a *SqlArgsRequire) Match(rows Table) (err error) {
 	if err = a.Column.Match(rows); err != nil {
 		return err
 	}
-	if err = a.Value.Match(rows); err != nil {
+	if err = a.Cell.Match(rows); err != nil {
 		return err
 	}
 	return nil
