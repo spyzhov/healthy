@@ -45,3 +45,22 @@ func (a Table) Match(table [][]interface{}, null string) (err error) {
 	}
 	return nil
 }
+
+func (a Table) Row(index int) Slice {
+	if len(a) > index {
+		return a[index]
+	}
+	return nil
+}
+
+func (a Table) Column(index int) Slice {
+	column := make(Slice, 0)
+	if len(a) > 0 {
+		if len(a[0]) > index {
+			for _, row := range a {
+				column = append(column, row[index])
+			}
+		}
+	}
+	return column
+}

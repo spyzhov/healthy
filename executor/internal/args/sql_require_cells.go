@@ -4,9 +4,9 @@ import (
 	"fmt"
 )
 
-type SqlArgsRequireValues []SqlArgsRequireValue
+type SqlArgsRequireCells []SqlArgsRequireCell
 
-func (a SqlArgsRequireValues) Validate() (err error) {
+func (a SqlArgsRequireCells) Validate() (err error) {
 	for _, value := range a {
 		if err = value.Validate(); err != nil {
 			return err
@@ -15,7 +15,7 @@ func (a SqlArgsRequireValues) Validate() (err error) {
 	return nil
 }
 
-func (a SqlArgsRequireValues) Match(rows Table) (err error) {
+func (a SqlArgsRequireCells) Match(rows Table) (err error) {
 	for i, value := range a {
 		if err = value.Match(rows); err != nil {
 			return fmt.Errorf("value %d: %w", i, err)

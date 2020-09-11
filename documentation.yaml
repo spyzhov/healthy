@@ -144,19 +144,176 @@ groups: # [array]  list of groups
                 ge: 99        # [numeric] the investigated value should be greater than this value
                 geq: 100      # [numeric] the investigated value should be greater or equal than this value
               rows: # [table] validation of the response, full set of values;
-                - [ 1, 2, 3 ]      # [Row] all rows should be a list in the same size;
-                - [ 4, 'NULL', 6 ] # [Row] if the value is NULL, set is as a string to compare;
+                value:
+                  - [ 1, 2, 3 ]      # [Row] all rows should be a list in the same size;
+                  - [ 4, 'NULL', 6 ] # [Row] if the value is NULL, set is as a string to compare;
+                is_null: false       # [bool] simple validate all values to be (NOT) NULL;
+                numeric: # [Numeric] validates all values as numeric in the given result:
+                  in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                  not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                  eq: 418       # [numeric] the investigated value should be equal to this value
+                  not: 500      # [numeric] the investigated value should not be equal to this value
+                  le: 600       # [numeric] the investigated value should be lesser than this value
+                  leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                  ge: 99        # [numeric] the investigated value should be greater than this value
+                  geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                content: # [Content] validates the content of all values by given assertions:
+                  type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
+                  length: # [Numeric] validates Content-Length of the response by given assertions:
+                    in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                    not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                    eq: 418       # [numeric] the investigated value should be equal to this value
+                    not: 500      # [numeric] the investigated value should not be equal to this value
+                    le: 600       # [numeric] the investigated value should be lesser than this value
+                    leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                    ge: 99        # [numeric] the investigated value should be greater than this value
+                    geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                  json: # [list] list of JSON validators; each validator runs independent and can check different part of the content;
+                    - jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                      xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                      match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                      jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
+                        {
+                          "$id": "https://example.com/string.schema.json",
+                          "$schema": "http://json-schema.org/draft-07/schema#",
+                          "title": "Country",
+                          "type": {
+                            "type": "array",
+                            "items": [
+                              {
+                                "type": "string",
+                                "enum": ["NW", "NE", "SW", "SE"]
+                              }
+                            ]
+                          }
+                        }
+                  html: # [list] list of HTML validators; each validator runs independent and can check different part of the content;
+                    - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                      match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                  xml: # [list] list of XML validators; each validator runs independent and can check different part of the content;
+                    - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                      match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                  text: # [list] list of Text validators; each validator runs independent and can check different part of the content;
+                    - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                      not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
               row: # [list of validators] validates one row by value;
                 - row: 0             # [numeric] row number;
                   value: [ 1, 2, 3 ] # [Row] list of values, which will be compared with result row;
+                  is_null: false       # [bool] simple validate all values to be (NOT) NULL;
+                  numeric: # [Numeric] validates all values as numeric in the given result:
+                    in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                    not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                    eq: 418       # [numeric] the investigated value should be equal to this value
+                    not: 500      # [numeric] the investigated value should not be equal to this value
+                    le: 600       # [numeric] the investigated value should be lesser than this value
+                    leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                    ge: 99        # [numeric] the investigated value should be greater than this value
+                    geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                  content: # [Content] validates the content of all values by given assertions:
+                    type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
+                    length: # [Numeric] validates Content-Length of the response by given assertions:
+                      in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                      not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                      eq: 418       # [numeric] the investigated value should be equal to this value
+                      not: 500      # [numeric] the investigated value should not be equal to this value
+                      le: 600       # [numeric] the investigated value should be lesser than this value
+                      leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                      ge: 99        # [numeric] the investigated value should be greater than this value
+                      geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                    json: # [list] list of JSON validators; each validator runs independent and can check different part of the content;
+                      - jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                        xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                        match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                        jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
+                          {
+                            "$id": "https://example.com/string.schema.json",
+                            "$schema": "http://json-schema.org/draft-07/schema#",
+                            "title": "Country",
+                            "type": {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "string",
+                                  "enum": ["NW", "NE", "SW", "SE"]
+                                }
+                              ]
+                            }
+                          }
+                    html: # [list] list of HTML validators; each validator runs independent and can check different part of the content;
+                      - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                        match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    xml: # [list] list of XML validators; each validator runs independent and can check different part of the content;
+                      - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                        match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    text: # [list] list of Text validators; each validator runs independent and can check different part of the content;
+                      - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
               column: # [list of validators] validates one column by value;
                 - column: 1            # [numeric] column number;
                   value: [ 2, 'NULL' ] # [Column] list of values, which will be compared with result column;
-              value: # [list of validators] validates one cell by value;
-                - row: 1         # [numeric] row number;
-                  column: 2      # [numeric] column number;
-                  is_null: false # [bool] simple validate value to be NULL;
-                  numeric: # [Numeric] validates count of the rows in the given result:
+                  is_null: false       # [bool] simple validate all values to be (NOT) NULL;
+                  numeric: # [Numeric] validates all values as numeric in the given result:
+                    in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                    not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                    eq: 418       # [numeric] the investigated value should be equal to this value
+                    not: 500      # [numeric] the investigated value should not be equal to this value
+                    le: 600       # [numeric] the investigated value should be lesser than this value
+                    leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                    ge: 99        # [numeric] the investigated value should be greater than this value
+                    geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                  content: # [Content] validates the content of all values by given assertions:
+                    type: JSON # [enum: JSON, XML, HTML, YAML] asserts content type;
+                    length: # [Numeric] validates Content-Length of the response by given assertions:
+                      in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
+                      not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
+                      eq: 418       # [numeric] the investigated value should be equal to this value
+                      not: 500      # [numeric] the investigated value should not be equal to this value
+                      le: 600       # [numeric] the investigated value should be lesser than this value
+                      leq: 599      # [numeric] the investigated value should be lesser or equal than this value
+                      ge: 99        # [numeric] the investigated value should be greater than this value
+                      geq: 100      # [numeric] the investigated value should be greater or equal than this value
+                    json: # [list] list of JSON validators; each validator runs independent and can check different part of the content;
+                      - jsonpath: '$.json[?(@.path)]' # [string as JSONPath] if this field is set, the value will be pre-processed by given JSONPath;
+                        xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                        match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                        jsonschema: | # [JSON Schema] the value will be validated by given JSON Schema;
+                          {
+                            "$id": "https://example.com/string.schema.json",
+                            "$schema": "http://json-schema.org/draft-07/schema#",
+                            "title": "Country",
+                            "type": {
+                              "type": "array",
+                              "items": [
+                                {
+                                  "type": "string",
+                                  "enum": ["NW", "NE", "SW", "SE"]
+                                }
+                              ]
+                            }
+                          }
+                    html: # [list] list of HTML validators; each validator runs independent and can check different part of the content;
+                      - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                        match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    xml: # [list] list of XML validators; each validator runs independent and can check different part of the content;
+                      - xpath: '//x/path'             # [string as XPath] if this field is set, the value will be pre-processed by given XPath;
+                        match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+                    text: # [list] list of Text validators; each validator runs independent and can check different part of the content;
+                      - match: '(?m)(regex){1,}'     # [regex] value should match given regex;
+                        not_match: '(?m)(regex){1,}' # [regex] value should not match given regex;
+              cell: # [list of validators] validates one cell by value;
+                - row: 1         # [numeric] row number; (default: 0)
+                  column: 2      # [numeric] column number; (default: 0)
+                  is_null: false # [bool] simple validate value to be (NOT) NULL;
+                  numeric: # [Numeric] validates value as numeric in the given result:
                     in: [ 1 ]     # [list of numeric] investigated value to be in should be in the list of these numbers
                     not_in: [ 0 ] # [list of numeric] investigated value to be in should not be in the list of these numbers
                     eq: 418       # [numeric] the investigated value should be equal to this value

@@ -7,7 +7,6 @@ import (
 )
 
 type SqlArgsRequireValue struct {
-	Cell
 	IsNull  *Bool           `json:"is_null"`
 	Numeric *RequireNumeric `json:"numeric"`
 	Content *RequireContent `json:"content"`
@@ -16,9 +15,6 @@ type SqlArgsRequireValue struct {
 func (a *SqlArgsRequireValue) Validate() (err error) {
 	if a == nil {
 		return nil
-	}
-	if err = a.Cell.Validate(); err != nil {
-		return safe.Wrap(err, "value")
 	}
 	if err = a.IsNull.Validate(); err != nil {
 		return safe.Wrap(err, "is_null")
@@ -32,15 +28,12 @@ func (a *SqlArgsRequireValue) Validate() (err error) {
 	return nil
 }
 
-func (a *SqlArgsRequireValue) Match(rows Table) (err error) {
+func (a *SqlArgsRequireValue) Match(value interface{}) (err error) {
 	if a == nil {
 		return nil
 	}
-	if err = a.Cell.Match(rows); err != nil {
-		return err
-	}
-	isNil := safe.IsNil(a.Cell.get(rows))
-	str := fmt.Sprintf("%v", a.Cell.get(rows))
+	isNil := safe.IsNil(value)
+	str := fmt.Sprintf("%v", value)
 	if isNil {
 		str = "NULL"
 	}
