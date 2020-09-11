@@ -1,4 +1,4 @@
-package web
+package app
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (app *Application) httpFavicon(w http.ResponseWriter, r *http.Request) {
+func (app *Application) httpFavicon(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("content-type", "image/x-icon")
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(app.favicon); err != nil {

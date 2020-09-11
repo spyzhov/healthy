@@ -2,13 +2,22 @@ package app
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spyzhov/safe"
 	"go.uber.org/zap"
 )
 
-func NewLogger(level string) (logger *zap.Logger, err error) {
-	cfg := zap.NewProductionConfig()
+func NewLogger(level string, format string) (logger *zap.Logger, err error) {
+	var cfg zap.Config
+	switch strings.ToLower(format) {
+	case "json":
+		cfg = zap.NewProductionConfig()
+	case "text":
+		cfg = zap.NewDevelopmentConfig()
+	default:
+		return nil, fmt.Errorf("log-format should be one of the next: json, text")
+	}
 	cfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 
 	atom := zap.NewAtomicLevel()

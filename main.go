@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	app "github.com/spyzhov/healthy/app/cmd"
+	"github.com/spyzhov/healthy/app"
 	"github.com/spyzhov/safe"
 )
+
+//go:generate go-license -format md -output INHERITED_LICENSES.md
 
 func main() {
 	application, err := app.New()

@@ -1,4 +1,4 @@
-package web
+package app
 
 import (
 	"fmt"
@@ -14,7 +14,10 @@ func (app *Application) RunHttp(handler *http.ServeMux, port int, name string) e
 	app.WaitGroup.Add(1)
 	go func() {
 		defer app.WaitGroup.Done()
-		app.Logger.Info(fmt.Sprintf("http handler '%s' started on [::]:%d", name, port))
+		app.Logger.Info("http handler started",
+			zap.String("url", fmt.Sprintf("http://localhost:%d/", port)),
+			zap.String("name", name),
+			zap.Int("port", port))
 		server := &http.Server{
 			Addr:    ":" + strconv.Itoa(port),
 			Handler: handler,
