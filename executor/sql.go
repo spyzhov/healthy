@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	_ "runtime/cgo"
+	_ "runtime/cgo" // necessary for some drivers
 
 	"github.com/spyzhov/healthy/executor/internal"
 	. "github.com/spyzhov/healthy/executor/internal/args"

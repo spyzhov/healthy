@@ -7,11 +7,11 @@ services:
     build:
       context: ./
     environment:
-      LOG_LEVEL: info
-      PORT: 80
-      MANAGEMENT_PORT: 3280
-#      CONFIG_FILE: example.yaml
-      CONFIG_YAML: |
+      HEALTHY_LOG_LEVEL: info
+      HEALTHY_PORT: 80
+      HEALTHY_MANAGEMENT_PORT: 3280
+#      HEALTHY_CONFIG_FILE: example.yaml
+      HEALTHY_CONFIG_YAML: |
         version: 1
         name: Simple example
         groups:

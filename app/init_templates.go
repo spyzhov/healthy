@@ -1,4 +1,4 @@
-package web
+package app
 
 import (
 	"html/template"
@@ -9,7 +9,7 @@ import (
 
 // setTemplates initialize all necessary templates
 func (app *Application) setTemplates() (err error) {
-	box := packr.New("templates", "../../templates")
+	box := packr.New("templates", "../templates")
 	app.templates = make(map[string]*template.Template)
 	// region Templates functions
 	functions := template.FuncMap{

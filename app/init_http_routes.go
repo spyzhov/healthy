@@ -1,4 +1,4 @@
-package web
+package app
 
 import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"

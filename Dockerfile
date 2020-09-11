@@ -25,14 +25,14 @@ RUN go mod download
 COPY . .
 
 RUN go mod vendor -v
-RUN cd web/healthy && packr2 -v && cd -
-RUN ["/bin/bash", "build.sh", "./web/healthy", "/go/bin/healthy"]
+RUN packr2 -v
+RUN ["/bin/bash", "build.sh", ".", "/go/bin/healthy"]
 
 FROM debian:9-slim
 # environment
-ENV LOG_LEVEL=info
-ENV PORT=80
-ENV MANAGEMENT_PORT=3280
+ENV HEALTHY_LOG_LEVEL=info
+ENV HEALTHY_PORT=80
+ENV HEALTHY_MANAGEMENT_PORT=3280
 # configurations
 EXPOSE 80
 EXPOSE 3280
@@ -45,4 +45,4 @@ COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 # the main program:
 COPY --from=builder /go/bin/healthy ./healthy
 COPY --from=builder /go/src/github.com/spyzhov/healthy/example.yaml ./example.yaml
-CMD ["./healthy"]
+CMD ["./healthy", "--web"]

@@ -2,6 +2,9 @@ package app
 
 import (
 	"context"
+	"html/template"
+	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -13,6 +16,7 @@ import (
 )
 
 type Application struct {
+	// region System
 	Config    *Config
 	Logger    *zap.Logger
 	Info      *BuildInfo
@@ -22,18 +26,35 @@ type Application struct {
 
 	error chan error
 	once  sync.Once
-
+	// endregion
+	// region Service
 	StepConfig *config.Config
 	StepGroups *step.Groups
 	Executor   *executor.Executor
+	// endregion
+	// region Web
+	Http       *http.ServeMux
+	Management *http.ServeMux
+	templates  map[string]*template.Template
+	favicon    []byte
+	// endregion
+	// region Cli
+	Status int
+	// endregion
 }
 
-func New(config *Config) (app *Application, err error) {
+func New() (app *Application, err error) {
 	app = &Application{
+		// region System
 		error:      make(chan error, 1),
 		Info:       NewBuildInfo(),
 		WaitGroup:  new(sync.WaitGroup),
 		StepGroups: step.NewGroups(),
+		// endregion
+		// region Web
+		Http:       http.NewServeMux(),
+		Management: http.NewServeMux(),
+		// endregion
 	}
 
 	app.Ctx, app.CtxCancel = context.WithCancel(context.Background())
@@ -42,15 +63,14 @@ func New(config *Config) (app *Application, err error) {
 			app.Close()
 		}
 	}()
-	if config == nil {
-		app.Config, err = NewConfig()
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		app.Config = config
+	app.Config, err = NewConfig()
+	if err != nil {
+		return nil, err
 	}
-	app.Logger, err = NewLogger(app.Config.Level)
+	if app.Config.CallVersion {
+		app.printVersion()
+	}
+	app.Logger, err = NewLogger(app.Config.LogLevel, app.Config.LogFormat)
 	if err != nil {
 		return nil, err
 	}
@@ -66,6 +86,7 @@ func (app *Application) Close() {
 		return
 	}
 
+	defer os.Exit(app.Status)
 	defer close(app.error)
 	defer safe.Close(app.Executor, "Executor")
 	//defer safe.Close(app.Resource, "resource name")
@@ -73,6 +94,25 @@ func (app *Application) Close() {
 
 // Start initialize all long-living processes
 func (app *Application) Start() {
+	defer app.Stop()
+
+	if app.Config.CallWeb {
+		// Run HTTP handler
+		if err := app.RunHttp(app.Http, app.Config.Port, "HTTP Server"); err != nil {
+			app.Logger.Panic("HTTP Server start error", zap.Error(err))
+		}
+
+		// Run HTTP Management handler
+		if err := app.RunHttp(app.Management, app.Config.ManagementPort, "HTTP Management Server"); err != nil {
+			app.Logger.Panic("HTTP Management Server start error", zap.Error(err))
+		}
+	} else {
+		// Run Action
+		if err := app.RunAction(); err != nil {
+			app.Logger.Panic("Action start error", zap.Error(err))
+		}
+	}
+
 	select {
 	case err := <-app.error:
 		app.Logger.Panic("crashed", zap.Error(err))

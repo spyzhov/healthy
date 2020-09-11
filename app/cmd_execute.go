@@ -1,4 +1,4 @@
-package cmd
+package app
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/spyzhov/healthy/step"
 )
 
-func (app Application) execute(groups []string, steps []string) int {
+func (app *Application) execute(groups []string, steps []string) int {
 	if len(groups) == 0 {
 		groups = app.StepGroups.Names()
 	}
