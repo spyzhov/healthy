@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"mime/multipart"
-	"os"
 	"path"
 
+	. "github.com/spyzhov/healthy/executor/internal"
 	"github.com/spyzhov/safe"
 )
 
@@ -16,20 +16,22 @@ type HttpArgsForm struct {
 	Files  map[string]string `json:"files"`
 }
 
-func (a *HttpArgsForm) Validate() error {
+func (a *HttpArgsForm) Validate() (err error) {
+	if a == nil {
+		return nil
+	}
 	for _, filename := range a.Files {
-		info, err := os.Stat(filename)
-		if os.IsNotExist(err) {
-			return fmt.Errorf("form: file not exists: %s", filename)
-		}
-		if info.IsDir() {
-			return fmt.Errorf("form: given directory path: %s", filename)
+		if err = IsFileExists(filename); err != nil {
+			return safe.Wrap(err, "form")
 		}
 	}
 	return nil
 }
 
 func (a *HttpArgsForm) SubmitForm(b *bytes.Buffer) (contentType string, err error) {
+	if a == nil {
+		return "", nil
+	}
 	if len(a.Values) != 0 || len(a.Files) != 0 {
 		writer := multipart.NewWriter(b)
 		defer safe.Close(writer, "multipart writer")

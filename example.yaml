@@ -180,9 +180,9 @@ groups:
           # ncat -l 10000 -k -c 'xargs -n1 echo'
           - type: tcp
             address: '127.0.0.1:10000'
-            rn: true
-            input: |
-              example
+            input:
+              text: "example"
+              rn: true
             until: '\r\n'
             timeout: 10ms
             require:

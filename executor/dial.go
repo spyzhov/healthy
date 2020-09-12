@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"strings"
 	"time"
@@ -16,12 +17,11 @@ import (
 
 type DialArgs struct {
 	// region Request
-	Type    String   `json:"type"`
-	Address String   `json:"address"`
-	Input   string   `json:"input"`
-	Until   string   `json:"until"`
-	Timeout Duration `json:"timeout"`
-	Rn      bool     `json:"rn"`
+	Type    String     `json:"type"`
+	Address String     `json:"address"`
+	Input   *ReachText `json:"input"`
+	Until   string     `json:"until"`
+	Timeout Duration   `json:"timeout"`
 	// endregion
 	// region Require
 	Require *DialArgsRequire `json:"require"`
@@ -48,11 +48,13 @@ func (e *Executor) Dial(args *DialArgs) (step.Function, error) {
 			return nil, safe.Wrap(err, "dial: config")
 		}
 		defer safe.Close(conn, "dial: connection")
-		input := args.Input
-		if args.Rn {
-			input = strings.Join(strings.Split(input, "\n"), "\r\n")
+		var input io.ReadCloser
+		input, err = args.Input.Value()
+		if err != nil {
+			return nil, err
 		}
-		_, err = fmt.Fprint(conn, input)
+		defer safe.Close(input, "dial: input")
+		_, err = io.Copy(conn, input)
 		if err != nil {
 			return nil, safe.Wrap(err, "dial: write")
 		}
@@ -94,6 +96,9 @@ func (e *Executor) Dial(args *DialArgs) (step.Function, error) {
 func (a *DialArgs) Validate() (err error) {
 	if err = a.Type.Validate(); err != nil {
 		return safe.Wrap(err, "type")
+	}
+	if err = a.Input.Validate(); err != nil {
+		return safe.Wrap(err, "input")
 	}
 	if err = a.Address.Validate(); err != nil {
 		return safe.Wrap(err, "address")

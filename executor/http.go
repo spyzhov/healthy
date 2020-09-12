@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -17,7 +18,7 @@ type HttpArgs struct {
 	// region Request
 	Method    string             `json:"method"`
 	Url       string             `json:"url"`
-	Payload   *string            `json:"payload"`
+	Payload   *ReachText         `json:"payload"`
 	Form      HttpArgsForm       `json:"form"`
 	Headers   map[string]string  `json:"headers"`
 	Timeout   Duration           `json:"timeout"`
@@ -52,6 +53,7 @@ func (e *Executor) Http(args *HttpArgs) (step.Function, error) {
 		if err != nil {
 			return nil, fmt.Errorf("http: %w", err)
 		}
+		defer safe.Close(body, "request body")
 		request, err := http.NewRequest(args.method(), args.Url, body)
 		if err != nil {
 			return nil, fmt.Errorf("http: %w", err)
@@ -87,6 +89,9 @@ func (a *HttpArgs) Validate() (err error) {
 	if err = a.Timeout.Validate(); err != nil {
 		return err
 	}
+	if err = a.Payload.Validate(); err != nil {
+		return err
+	}
 	if err = a.Form.Validate(); err != nil {
 		return err
 	}
@@ -106,18 +111,19 @@ func (a *HttpArgs) method() string {
 	return a.Method
 }
 
-func (a *HttpArgs) body() (contentType string, r io.Reader, err error) {
-	var b bytes.Buffer
+func (a *HttpArgs) body() (contentType string, r io.ReadCloser, err error) {
 	if a.Payload != nil {
-		_, err = b.WriteString(*a.Payload)
+		r, err = a.Payload.Value()
 		if err != nil {
-			return "", nil, fmt.Errorf("write buffer: %w", err)
+			return "", nil, safe.Wrap(err, "payload")
 		}
 	} else {
-		contentType, err = a.Form.SubmitForm(&b)
+		b := new(bytes.Buffer)
+		contentType, err = a.Form.SubmitForm(b)
 		if err != nil {
 			return "", nil, err
 		}
+		r = ioutil.NopCloser(b)
 	}
-	return contentType, &b, err
+	return contentType, r, err
 }
