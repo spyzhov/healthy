@@ -33,7 +33,10 @@ groups: # [array]  list of groups
             url: 'http://example.com' # [string, required] full URL of the request;
             timeout: 10s      # [duration] timeout for request; (default: 30s)
             redirect: false   # [bool] follow redirects; (default: false)
-            payload: '[data]' # [string] string with any kind of data as the request body; you can send payload or form at the same time;
+            payload: # [ReachText] this value will be given as request body (only `text` or `file` field should be filled at the same time); you can send payload or form at the same time;
+              text: "example"    # [string] text value;
+              file: requet.http  # [string] all binary info from the file will be given as input value;
+              rn: true           # [bool] replace \n to the \r\n in the input string; (default: false)
             form: # [wrapper] the wrapper of form values, if you want to send a form with values (or/and files); you can send payload or form at the same time;
               values: # [map string to string] list of field-value pairs to be sent as values;
                 fieldName01: fieldValue1 # the value should be any string
@@ -403,8 +406,11 @@ groups: # [array]  list of groups
             masked: true        # [bool] this flag will hide value from the output;
         args:
           - command: [ "curl", "http://google.com" ] # [list of strings, required] valid command;
-            dir: "/var/www/" # [string] directory where the command will run;
-            input: 'example' # [string] this value will be given as stdin to the command;
+            dir: "/var/www/"     # [string] directory where the command will run;
+            input: # [ReachText] this value will be given as stdin to the command (only `text` or `file` field should be filled at the same time):
+              text: "example"    # [string] text value;
+              file: requet.http  # [string] all binary info from the file will be given as input value;
+              rn: true           # [bool] replace \n to the \r\n in the input string; (default: false)
             env: # [map: string to string] list of environment variables;
               FOO: bar
             timeout: 10s  # [duration] timeout for the command; (default: 60s)
@@ -517,9 +523,11 @@ groups: # [array]  list of groups
         args:
           - type: tcp            # [string, required] type of the dial-connection;
             address: '127.0.0.1' # [string, required] valid address;
-            input: 'example'     # [string] this value will be given as input to the dial connect;
+            input:               # [ReachText] this value will be given as input to the dial connect (only `text` or `file` field should be filled at the same time):
+              text: "example"    # [string] text value;
+              file: requet.http  # [string] all binary info from the file will be given as input value;
+              rn: true           # [bool] replace \n to the \r\n in the input string; (default: false)
             until: '\r\n\r\n'    # [string] content will be read until this string;
-            rn: true             # [bool] replace \n to the \r\n in the input string; (default: false)
             timeout: 10s         # [duration] timeout for the connection; (default: 1s)
             require: # [Validation] current block validates the result:
               content: # [Content] validates the content by given assertions:

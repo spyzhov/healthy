@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 	"time"
 
 	. "github.com/spyzhov/healthy/executor/internal/args"
@@ -18,7 +17,7 @@ type CmdArgs struct {
 	Command []string          `json:"command"`
 	Dir     string            `json:"dir"`
 	Env     map[string]string `json:"env"`
-	Input   string            `json:"input"`
+	Input   *ReachText        `json:"input"`
 	Timeout Duration          `json:"timeout"`
 	Require CmdArgsRequire    `json:"require"`
 }
@@ -38,11 +37,15 @@ func (e *Executor) Cmd(args *CmdArgs) (step.Function, error) {
 
 	return func() (*step.Result, error) {
 		var (
-			status int
-			output bytes.Buffer
-			stderr bytes.Buffer
-			stdin  = strings.NewReader(args.Input)
+			status     int
+			output     bytes.Buffer
+			stderr     bytes.Buffer
+			stdin, err = args.Input.Value()
 		)
+		if err != nil {
+			return nil, err
+		}
+		defer safe.Close(stdin, "cmd: input")
 		ctx, cancel := context.WithTimeout(e.ctx, timeout)
 		defer cancel()
 		// #nosec G204
@@ -55,7 +58,7 @@ func (e *Executor) Cmd(args *CmdArgs) (step.Function, error) {
 		if args.Dir != "" {
 			cmd.Dir = args.Dir
 		}
-		err := cmd.Run()
+		err = cmd.Run()
 		if err != nil {
 			if res, ok := err.(*exec.ExitError); ok {
 				status = res.ExitCode()
@@ -87,6 +90,9 @@ func (a *CmdArgs) Validate() (err error) {
 		if !stat.IsDir() {
 			return fmt.Errorf("dir: the directory should exist and be a valid directory")
 		}
+	}
+	if err = a.Input.Validate(); err != nil {
+		return safe.Wrap(err, "input")
 	}
 	if err = a.Timeout.Validate(); err != nil {
 		return safe.Wrap(err, "timeout")

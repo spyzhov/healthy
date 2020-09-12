@@ -19,8 +19,10 @@ type contextKey string
 
 func TestExecutor_Http(t *testing.T) {
 	// region helpers
-	newString := func(s string) *string {
-		return &s
+	newPayload := func(s string) *ReachText {
+		return &ReachText{
+			Text: &s,
+		}
 	}
 	newFloat64 := func(f float64) *float64 {
 		return &f
@@ -122,7 +124,7 @@ func TestExecutor_Http(t *testing.T) {
 				args = &HttpArgs{
 					Method:    "POST",
 					Url:       server.URL,
-					Payload:   newString(`value`),
+					Payload:   newPayload(`value`),
 					Form:      HttpArgsForm{},
 					Headers:   nil,
 					Timeout:   Duration{},
@@ -158,7 +160,7 @@ func TestExecutor_Http(t *testing.T) {
 				args = &HttpArgs{
 					Method:    "POST",
 					Url:       server.URL,
-					Payload:   newString(`value`),
+					Payload:   newPayload(`value`),
 					Form:      HttpArgsForm{},
 					Headers:   nil,
 					Timeout:   Duration{},
@@ -193,7 +195,7 @@ func TestExecutor_Http(t *testing.T) {
 				args = &HttpArgs{
 					Method:  "POST",
 					Url:     server.URL,
-					Payload: newString(`value`),
+					Payload: newPayload(`value`),
 					Form:    HttpArgsForm{},
 					Headers: nil,
 					Timeout: Duration{
@@ -221,7 +223,7 @@ func TestExecutor_Http(t *testing.T) {
 				args = &HttpArgs{
 					Method:  "POST",
 					Url:     server.URL,
-					Payload: newString(`value`),
+					Payload: newPayload(`value`),
 					Form: HttpArgsForm{
 						Values: map[string]string{
 							"key": "value",
@@ -312,7 +314,7 @@ func TestExecutor_Http(t *testing.T) {
 				args = &HttpArgs{
 					Method:    "POST",
 					Url:       server.URL,
-					Payload:   newString(`value`),
+					Payload:   newPayload(`value`),
 					Form:      HttpArgsForm{},
 					Headers:   nil,
 					Timeout:   Duration{},
