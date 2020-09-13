@@ -3,6 +3,7 @@ module github.com/spyzhov/healthy
 go 1.13
 
 require (
+	github.com/ClickHouse/clickhouse-go v1.4.3
 	github.com/antchfx/htmlquery v1.2.3
 	github.com/antchfx/jsonquery v1.1.4
 	github.com/antchfx/xmlquery v1.2.4

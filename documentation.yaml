@@ -127,6 +127,7 @@ groups: # [array]  list of groups
         #       mssql: "github.com/denisenkom/go-mssqldb"
         # firebirdsql: "github.com/nakagami/firebirdsql"
         #       adodb: "github.com/mattn/go-adodb"
+        #  clickhouse: "github.com/ClickHouse/clickhouse-go"
         variables: # [list of Variables]
           - name: VARIABLE_NAME # [string] local variable name;
             value: ${VAR_NAME}  # [string] local variable value;

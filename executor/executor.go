@@ -31,7 +31,7 @@ func NewExecutor(ctx context.Context, version string) *Executor {
 
 // Get will return a result of any public method from Executor.
 // Method will be found by its name, example: string `get name` will call method `GetName`.
-// All necessary arguments will be taken from the args variable and placed enumerably: `GetName(args[0], args[1], ...)`
+// All necessary arguments will be taken from the args variable and placed innumerable: `GetName(args[0], args[1], ...)`
 func Get(e *Executor, name string, args []interface{}) (step.Function, error) {
 	// region Method
 	methodName := getMethodName(name)

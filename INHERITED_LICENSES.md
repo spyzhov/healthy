@@ -48,6 +48,7 @@
 | Package | Versions |
 | --- | --- |
 | github.com/andybalholm/cascadia | [v1.1.0](https://pkg.go.dev/github.com/andybalholm/cascadia@v1.1.0?tab=licenses) |
+| github.com/bkaradzic/go-lz4 | [v1.0.0](https://pkg.go.dev/github.com/bkaradzic/go-lz4@v1.0.0?tab=licenses) |
 | github.com/gorilla/websocket | [v1.4.0](https://pkg.go.dev/github.com/gorilla/websocket@v1.4.0?tab=licenses) |
 | github.com/karrick/godirwalk | [v1.15.3](https://pkg.go.dev/github.com/karrick/godirwalk@v1.15.3?tab=licenses) |
 | github.com/magiconair/properties | [v1.8.0](https://pkg.go.dev/github.com/magiconair/properties@v1.8.0?tab=licenses) |
@@ -61,6 +62,7 @@
 | --- | --- |
 | github.com/PuerkitoBio/goquery | [v1.5.1](https://pkg.go.dev/github.com/PuerkitoBio/goquery@v1.5.1?tab=licenses) |
 | github.com/alecthomas/template | [v0.0.0-20160405071501-a0175ee3bccc](https://pkg.go.dev/github.com/alecthomas/template@v0.0.0-20160405071501-a0175ee3bccc?tab=licenses) <br /> [v0.0.0-20190718012654-fb15b899a751](https://pkg.go.dev/github.com/alecthomas/template@v0.0.0-20190718012654-fb15b899a751?tab=licenses) |
+| github.com/cloudflare/golz4 | [v0.0.0-20150217214814-ef862a3cdc58](https://pkg.go.dev/github.com/cloudflare/golz4@v0.0.0-20150217214814-ef862a3cdc58?tab=licenses) |
 | github.com/denisenkom/go-mssqldb | [v0.0.0-20200831201914-36b6ff1bbc10](https://pkg.go.dev/github.com/denisenkom/go-mssqldb@v0.0.0-20200831201914-36b6ff1bbc10?tab=licenses) |
 | github.com/fsnotify/fsnotify | [v1.4.7](https://pkg.go.dev/github.com/fsnotify/fsnotify@v1.4.7?tab=licenses) |
 | github.com/ghodss/yaml | [v1.0.0](https://pkg.go.dev/github.com/ghodss/yaml@v1.0.0?tab=licenses) |
@@ -72,6 +74,7 @@
 | github.com/julienschmidt/httprouter | [v1.2.0](https://pkg.go.dev/github.com/julienschmidt/httprouter@v1.2.0?tab=licenses) |
 | github.com/kardianos/osext | [v0.0.0-20190222173326-2bc1f35cddc0](https://pkg.go.dev/github.com/kardianos/osext@v0.0.0-20190222173326-2bc1f35cddc0?tab=licenses) |
 | github.com/miekg/dns | [v1.0.14](https://pkg.go.dev/github.com/miekg/dns@v1.0.14?tab=licenses) <br /> [v1.1.26](https://pkg.go.dev/github.com/miekg/dns@v1.1.26?tab=licenses) |
+| github.com/pierrec/lz4 | [v2.0.5+incompatible](https://pkg.go.dev/github.com/pierrec/lz4@v2.0.5+incompatible?tab=licenses) |
 | github.com/pmezard/go-difflib | [v1.0.0](https://pkg.go.dev/github.com/pmezard/go-difflib@v1.0.0?tab=licenses) |
 | github.com/remyoudompheng/bigfft | [v0.0.0-20200410134404-eec4a21b6bb0](https://pkg.go.dev/github.com/remyoudompheng/bigfft@v0.0.0-20200410134404-eec4a21b6bb0?tab=licenses) |
 | github.com/rogpeppe/fastuuid | [v0.0.0-20150106093220-6724a57986af](https://pkg.go.dev/github.com/rogpeppe/fastuuid@v0.0.0-20150106093220-6724a57986af?tab=licenses) |
@@ -112,6 +115,7 @@
 | Package | Versions |
 | --- | --- |
 | github.com/BurntSushi/toml | [v0.3.1](https://pkg.go.dev/github.com/BurntSushi/toml@v0.3.1?tab=licenses) |
+| github.com/ClickHouse/clickhouse-go | [v1.4.3](https://pkg.go.dev/github.com/ClickHouse/clickhouse-go@v1.4.3?tab=licenses) |
 | github.com/alecthomas/units | [v0.0.0-20151022065526-2efee857e7cf](https://pkg.go.dev/github.com/alecthomas/units@v0.0.0-20151022065526-2efee857e7cf?tab=licenses) <br /> [v0.0.0-20190717042225-c3de453c63f4](https://pkg.go.dev/github.com/alecthomas/units@v0.0.0-20190717042225-c3de453c63f4?tab=licenses) |
 | github.com/antchfx/htmlquery | [v1.2.3](https://pkg.go.dev/github.com/antchfx/htmlquery@v1.2.3?tab=licenses) |
 | github.com/antchfx/jsonquery | [v1.1.4](https://pkg.go.dev/github.com/antchfx/jsonquery@v1.1.4?tab=licenses) |
@@ -143,6 +147,7 @@
 | github.com/hashicorp/go-syslog | [v1.0.0](https://pkg.go.dev/github.com/hashicorp/go-syslog@v1.0.0?tab=licenses) |
 | github.com/hashicorp/mdns | [v1.0.1](https://pkg.go.dev/github.com/hashicorp/mdns@v1.0.1?tab=licenses) |
 | github.com/iancoleman/strcase | [v0.1.1](https://pkg.go.dev/github.com/iancoleman/strcase@v0.1.1?tab=licenses) |
+| github.com/jmoiron/sqlx | [v1.2.0](https://pkg.go.dev/github.com/jmoiron/sqlx@v1.2.0?tab=licenses) |
 | github.com/json-iterator/go | [v1.1.10](https://pkg.go.dev/github.com/json-iterator/go@v1.1.10?tab=licenses) <br /> [v1.1.6](https://pkg.go.dev/github.com/json-iterator/go@v1.1.6?tab=licenses) |
 | github.com/kisielk/errcheck | [v1.1.0](https://pkg.go.dev/github.com/kisielk/errcheck@v1.1.0?tab=licenses) |
 | github.com/kisielk/gotool | [v1.0.0](https://pkg.go.dev/github.com/kisielk/gotool@v1.0.0?tab=licenses) |
@@ -150,13 +155,13 @@
 | github.com/kr/pretty | [v0.1.0](https://pkg.go.dev/github.com/kr/pretty@v0.1.0?tab=licenses) <br /> [v0.2.0](https://pkg.go.dev/github.com/kr/pretty@v0.2.0?tab=licenses) |
 | github.com/kr/pty | [v1.1.1](https://pkg.go.dev/github.com/kr/pty@v1.1.1?tab=licenses) |
 | github.com/kr/text | [v0.1.0](https://pkg.go.dev/github.com/kr/text@v0.1.0?tab=licenses) |
-| github.com/lib/pq | [v1.8.0](https://pkg.go.dev/github.com/lib/pq@v1.8.0?tab=licenses) |
+| github.com/lib/pq | [v1.0.0](https://pkg.go.dev/github.com/lib/pq@v1.0.0?tab=licenses) <br /> [v1.8.0](https://pkg.go.dev/github.com/lib/pq@v1.8.0?tab=licenses) |
 | github.com/markbates/errx | [v1.1.0](https://pkg.go.dev/github.com/markbates/errx@v1.1.0?tab=licenses) |
 | github.com/markbates/oncer | [v1.0.0](https://pkg.go.dev/github.com/markbates/oncer@v1.0.0?tab=licenses) |
 | github.com/markbates/safe | [v1.0.1](https://pkg.go.dev/github.com/markbates/safe@v1.0.1?tab=licenses) |
 | github.com/mattn/go-colorable | [v0.0.9](https://pkg.go.dev/github.com/mattn/go-colorable@v0.0.9?tab=licenses) <br /> [v0.1.4](https://pkg.go.dev/github.com/mattn/go-colorable@v0.1.4?tab=licenses) <br /> [v0.1.6](https://pkg.go.dev/github.com/mattn/go-colorable@v0.1.6?tab=licenses) |
 | github.com/mattn/go-isatty | [v0.0.10](https://pkg.go.dev/github.com/mattn/go-isatty@v0.0.10?tab=licenses) <br /> [v0.0.11](https://pkg.go.dev/github.com/mattn/go-isatty@v0.0.11?tab=licenses) <br /> [v0.0.12](https://pkg.go.dev/github.com/mattn/go-isatty@v0.0.12?tab=licenses) <br /> [v0.0.3](https://pkg.go.dev/github.com/mattn/go-isatty@v0.0.3?tab=licenses) <br /> [v0.0.8](https://pkg.go.dev/github.com/mattn/go-isatty@v0.0.8?tab=licenses) |
-| github.com/mattn/go-sqlite3 | [v1.14.2](https://pkg.go.dev/github.com/mattn/go-sqlite3@v1.14.2?tab=licenses) |
+| github.com/mattn/go-sqlite3 | [v1.14.2](https://pkg.go.dev/github.com/mattn/go-sqlite3@v1.14.2?tab=licenses) <br /> [v1.9.0](https://pkg.go.dev/github.com/mattn/go-sqlite3@v1.9.0?tab=licenses) |
 | github.com/mitchellh/go-homedir | [v1.1.0](https://pkg.go.dev/github.com/mitchellh/go-homedir@v1.1.0?tab=licenses) |
 | github.com/mitchellh/go-testing-interface | [v1.0.0](https://pkg.go.dev/github.com/mitchellh/go-testing-interface@v1.0.0?tab=licenses) |
 | github.com/mitchellh/mapstructure | [v0.0.0-20160808181253-ca63d7c062ee](https://pkg.go.dev/github.com/mitchellh/mapstructure@v0.0.0-20160808181253-ca63d7c062ee?tab=licenses) <br /> [v1.1.2](https://pkg.go.dev/github.com/mitchellh/mapstructure@v1.1.2?tab=licenses) |
@@ -194,7 +199,7 @@
 | Package | Versions |
 | --- | --- |
 | github.com/armon/consul-api | [v0.0.0-20180202201655-eb2c6b5be1b6](https://pkg.go.dev/github.com/armon/consul-api@v0.0.0-20180202201655-eb2c6b5be1b6?tab=licenses) |
-| github.com/go-sql-driver/mysql | [v1.5.0](https://pkg.go.dev/github.com/go-sql-driver/mysql@v1.5.0?tab=licenses) |
+| github.com/go-sql-driver/mysql | [v1.4.0](https://pkg.go.dev/github.com/go-sql-driver/mysql@v1.4.0?tab=licenses) <br /> [v1.5.0](https://pkg.go.dev/github.com/go-sql-driver/mysql@v1.5.0?tab=licenses) |
 | github.com/hashicorp/consul/api | [v1.6.0](https://pkg.go.dev/github.com/hashicorp/consul/api@v1.6.0?tab=licenses) |
 | github.com/hashicorp/consul/sdk | [v0.6.0](https://pkg.go.dev/github.com/hashicorp/consul/sdk@v0.6.0?tab=licenses) |
 | github.com/hashicorp/errwrap | [v1.0.0](https://pkg.go.dev/github.com/hashicorp/errwrap@v1.0.0?tab=licenses) |
