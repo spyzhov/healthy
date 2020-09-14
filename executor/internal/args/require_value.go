@@ -6,13 +6,14 @@ import (
 	"github.com/spyzhov/safe"
 )
 
-type SqlArgsRequireValue struct {
+type RequireValue struct {
 	IsNull  *Bool           `json:"is_null"`
 	Numeric *RequireNumeric `json:"numeric"`
 	Content *RequireContent `json:"content"`
+	Bool    *Bool           `json:"bool"`
 }
 
-func (a *SqlArgsRequireValue) Validate() (err error) {
+func (a *RequireValue) Validate() (err error) {
 	if a == nil {
 		return nil
 	}
@@ -25,10 +26,13 @@ func (a *SqlArgsRequireValue) Validate() (err error) {
 	if err = a.Content.Validate(); err != nil {
 		return safe.Wrap(err, "content")
 	}
+	if err = a.Bool.Validate(); err != nil {
+		return safe.Wrap(err, "bool")
+	}
 	return nil
 }
 
-func (a *SqlArgsRequireValue) Match(value interface{}) (err error) {
+func (a *RequireValue) Match(value interface{}) (err error) {
 	if a == nil {
 		return nil
 	}
@@ -38,13 +42,16 @@ func (a *SqlArgsRequireValue) Match(value interface{}) (err error) {
 		str = "NULL"
 	}
 	if err = a.IsNull.Match(isNil, "NULL", "NOT NULL"); err != nil {
-		return err
+		return safe.Wrap(err, "is_null")
 	}
 	if err = a.Numeric.MatchString("numeric", str); err != nil {
 		return err
 	}
 	if err = a.Content.Match("content", []byte(str)); err != nil {
 		return err
+	}
+	if err = a.Bool.MatchInterface(value, "True", "False"); err != nil {
+		return safe.Wrap(err, "bool")
 	}
 	return nil
 }

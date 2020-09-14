@@ -1,0 +1,28 @@
+version: 1
+name: Postgres example
+groups:
+  - name: Postgres
+    validate:
+      - name: 'Postgres: SELECT 1'
+        type: sql
+        variables:
+          - name: POSTGRES_PASSWORD
+            value: $POSTGRES_PASSWORD
+            masked: true
+        args:
+          - driver: postgres
+            url: postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_DB?sslmode=disable
+            sql: 'SELECT $1'
+            args: [ "1" ]
+
+      - name: 'Postgres: wrong host'
+        type: sql
+        variables:
+          - name: POSTGRES_PASSWORD
+            value: $POSTGRES_PASSWORD
+            masked: true
+        args:
+          - driver: postgres
+            url: postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@wrong-host:5432/$POSTGRES_DB?sslmode=disable
+            sql: SELECT $1
+            args: [ "1" ]

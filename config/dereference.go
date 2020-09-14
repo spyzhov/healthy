@@ -18,7 +18,10 @@ func expand(content string, vars map[string]string) string {
 		if value, ok := vars[key]; ok {
 			return value
 		}
-		return os.Getenv(key)
+		if val, ok := os.LookupEnv(key); ok {
+			return val
+		}
+		return "$" + key
 	})
 }
 

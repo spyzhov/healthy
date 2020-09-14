@@ -12,6 +12,7 @@ require (
 	github.com/go-ole/go-ole v1.2.4 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gobuffalo/packr/v2 v2.8.0
+	github.com/gomodule/redigo v1.8.2
 	github.com/hashicorp/consul/api v1.6.0
 	github.com/hashicorp/go-cleanhttp v0.5.1
 	github.com/iancoleman/strcase v0.1.1

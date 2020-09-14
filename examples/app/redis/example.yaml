@@ -1,0 +1,37 @@
+version: 1
+name: Redis example
+groups:
+  - name: Redis
+    validate:
+      - name: 'Redis: SELECT 0'
+        type: app/redis
+        args:
+          - url: redis://redis
+            cmd: SELECT
+            args: [ "0" ]
+      - name: 'Redis: SET key'
+        type: app/redis
+        args:
+          - url: redis://redis
+            cmd: SET
+            args: [ "key", "value" ]
+            require:
+              value:
+                content:
+                  match: [ "OK" ]
+      - name: 'Redis: GET key'
+        type: app/redis
+        args:
+          - url: redis://redis
+            cmd: GET
+            args: [ "key" ]
+            require:
+              value:
+                content:
+                  match: [ "value" ]
+      - name: 'Redis: wrong host'
+        type: app/redis
+        args:
+          - url: redis://wrong-host
+            cmd: SELECT
+            args: [ "0" ]

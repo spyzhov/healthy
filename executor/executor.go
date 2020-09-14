@@ -2,8 +2,8 @@ package executor
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
+	"io"
 	"reflect"
 	"strings"
 	"sync"
@@ -18,14 +18,16 @@ type Executor struct {
 	ctx     context.Context
 	version string
 
-	connections map[string]*sql.DB
+	setters     map[string]func() (interface{}, error)
+	connections map[string]interface{}
 }
 
 func NewExecutor(ctx context.Context, version string) *Executor {
 	return &Executor{
 		ctx:         ctx,
 		version:     version,
-		connections: make(map[string]*sql.DB),
+		setters:     make(map[string]func() (interface{}, error)),
+		connections: make(map[string]interface{}),
 	}
 }
 
@@ -100,9 +102,34 @@ func getMethodArguments(name string, method *reflect.Value, args []interface{}) 
 // Close is an io.Closer function
 func (e *Executor) Close() error {
 	for id, connection := range e.connections {
-		defer safe.Close(connection, "Executor:db_connections:"+id)
+		if closer, ok := connection.(io.Closer); ok {
+			defer safe.Close(closer, "Executor:connection:"+id)
+		}
 	}
 	return nil
+}
+
+func (e *Executor) addSetter(id string, setter func() (interface{}, error)) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.setters[id] = setter
+}
+
+func (e *Executor) getConnection(id string) (interface{}, error) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	if value, ok := e.connections[id]; ok {
+		return value, nil
+	}
+	if setter, ok := e.setters[id]; ok {
+		if value, err := setter(); err != nil {
+			return nil, err
+		} else {
+			e.connections[id] = value
+			return value, nil
+		}
+	}
+	return nil, fmt.Errorf("connection not found")
 }
 
 // protected will be run with the mutex protection
