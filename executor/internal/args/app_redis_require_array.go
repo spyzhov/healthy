@@ -92,9 +92,7 @@ func (a *AppRedisArgsRequireArray) get(value interface{}) ([]interface{}, error)
 		return result, nil
 	}
 	if values, err := redis.Values(value, nil); err == nil {
-		for _, val := range values {
-			result = append(result, val)
-		}
+		result = append(result, values...)
 		return result, nil
 	}
 

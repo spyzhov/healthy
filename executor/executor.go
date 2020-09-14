@@ -132,11 +132,4 @@ func (e *Executor) getConnection(id string) (interface{}, error) {
 	return nil, fmt.Errorf("connection not found")
 }
 
-// protected will be run with the mutex protection
-func (e *Executor) protected(fn func() error) error {
-	e.mu.Lock()
-	defer e.mu.Unlock()
-	return fn()
-}
-
 // endregion
