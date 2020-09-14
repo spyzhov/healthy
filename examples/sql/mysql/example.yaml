@@ -1,0 +1,33 @@
+version: 1
+name: MySQL example
+groups:
+  - name: MySQL
+    validate:
+      - name: 'MySQL: SELECT 1'
+        type: sql
+        variables:
+          - name: MYSQL_USER
+            value: root
+            masked: false
+          - name: MYSQL_PASSWORD
+            value: $MYSQL_PASSWORD
+            masked: true
+          - name: MYSQL_DATABASE
+            value: $MYSQL_DATABASE
+        args:
+          - driver: mysql
+            url: '$MYSQL_USER:$MYSQL_PASSWORD@tcp(mysql:3306)/$MYSQL_DATABASE?parseTime=true'
+            sql: 'SELECT ?'
+            args: [ "1" ]
+
+      - name: 'MySQL: wrong host'
+        type: sql
+        variables:
+          - name: MYSQL_HOST
+            value: wrong-host
+            masked: true
+        args:
+          - driver: mysql
+            url: root:password@tcp($MYSQL_HOST:3306)/example
+            sql: 'SELECT ?'
+            args: [ "1" ]

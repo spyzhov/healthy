@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  healthy:
+    image: spyzhov/healthy:latest
+    environment:
+      HEALTHY_LOG_LEVEL: info
+      HEALTHY_PORT: 80
+      HEALTHY_MANAGEMENT_PORT: 3280
+      HEALTHY_CONFIG_FILE: /app/example.yaml
+    volumes:
+    - ./:/app:ro
+    ports:
+      - 80:80
+#      - 3280:3280
+  redis:
+    image: redis:5.0.1-alpine

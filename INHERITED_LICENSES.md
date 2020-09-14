@@ -14,6 +14,7 @@
 | github.com/golang/glog | [v0.0.0-20160126235308-23def4e6c14b](https://pkg.go.dev/github.com/golang/glog@v0.0.0-20160126235308-23def4e6c14b?tab=licenses) |
 | github.com/golang/groupcache | [v0.0.0-20190129154638-5b532d6fd5ef](https://pkg.go.dev/github.com/golang/groupcache@v0.0.0-20190129154638-5b532d6fd5ef?tab=licenses) <br /> [v0.0.0-20200121045136-8c9f03a8e57e](https://pkg.go.dev/github.com/golang/groupcache@v0.0.0-20200121045136-8c9f03a8e57e?tab=licenses) |
 | github.com/golang/mock | [v1.1.1](https://pkg.go.dev/github.com/golang/mock@v1.1.1?tab=licenses) |
+| github.com/gomodule/redigo | [v1.8.2](https://pkg.go.dev/github.com/gomodule/redigo@v1.8.2?tab=licenses) |
 | github.com/google/btree | [v0.0.0-20180813153112-4030bb1f1f0c](https://pkg.go.dev/github.com/google/btree@v0.0.0-20180813153112-4030bb1f1f0c?tab=licenses) <br /> [v1.0.0](https://pkg.go.dev/github.com/google/btree@v1.0.0?tab=licenses) |
 | github.com/google/gofuzz | [v1.0.0](https://pkg.go.dev/github.com/google/gofuzz@v1.0.0?tab=licenses) |
 | github.com/google/renameio | [v0.1.0](https://pkg.go.dev/github.com/google/renameio@v0.1.0?tab=licenses) |

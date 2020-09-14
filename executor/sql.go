@@ -35,52 +35,21 @@ func (e *Executor) Sql(args *SqlArgs) (step.Function, error) {
 		return nil, safe.Wrap(err, "sql")
 	}
 
-	var db *sql.DB
-	id := fmt.Sprintf("%s_%s", args.Driver, args.URL)
-	reconnect := func() error {
-		return e.protected(func() (err error) {
-			if old, ok := e.connections[id]; ok {
-				defer safe.Close(old, "Executor:db_connections:"+args.Driver+":old")
-				delete(e.connections, id)
-			}
-
-			db, err = sql.Open(args.Driver, args.URL)
-			if err != nil {
-				return safe.Wrap(err, "connect")
-			}
-			e.connections[id] = db
-			return nil
-		})
-	}
-	getDB := func() error {
-		return e.protected(func() (err error) {
-			var ok bool
-			if db, ok = e.connections[id]; ok {
-				return db.Ping()
-			}
-			return fmt.Errorf("not found")
-		})
-	}
-	if err := getDB(); err != nil {
-		if err := reconnect(); err != nil {
-			return nil, safe.Wrap(err, "sql")
-		}
-	}
-
-	var exec func(force bool) (*sql.Rows, error)
-	exec = func(first bool) (rows *sql.Rows, err error) {
-		rows, err = db.QueryContext(e.ctx, args.SQL, args.Args...)
-		if errors.Is(err, sql.ErrConnDone) || (err != nil && err.Error() == "sql: database is closed") {
-			if first {
-				rec := reconnect()
-				if rec != nil {
-					return nil, safe.Wrap(rec, "sql: reconnect")
-				}
-				return exec(false)
-			}
+	id := fmt.Sprintf("sql_%s_%s", args.Driver, args.URL)
+	e.addSetter(id, func() (interface{}, error) {
+		return sql.Open(args.Driver, args.URL)
+	})
+	exec := func() (rows *sql.Rows, err error) {
+		var (
+			db *sql.DB
+			ok bool
+		)
+		if conn, err := e.getConnection(id); err != nil {
 			return nil, err
+		} else if db, ok = conn.(*sql.DB); !ok {
+			return nil, fmt.Errorf("sql: connection error")
 		}
-		return rows, err
+		return db.QueryContext(e.ctx, args.SQL, args.Args...)
 	}
 
 	return func() (*step.Result, error) {
@@ -90,7 +59,7 @@ func (e *Executor) Sql(args *SqlArgs) (step.Function, error) {
 			header []string
 			data   [][]interface{}
 		)
-		if rows, err = exec(true); err != nil {
+		if rows, err = exec(); err != nil {
 			if !errors.Is(err, sql.ErrNoRows) {
 				return nil, safe.Wrap(err, "sql")
 			}

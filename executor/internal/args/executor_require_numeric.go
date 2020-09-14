@@ -36,6 +36,10 @@ func (a *RequireNumeric) MatchString(name string, str string) error {
 	return a.Match(name, numeric)
 }
 
+func (a *RequireNumeric) MatchInt(name string, numeric int) error {
+	return a.Match(name, float64(numeric))
+}
+
 func (a *RequireNumeric) Match(name string, numeric float64) error {
 	if a == nil {
 		return nil

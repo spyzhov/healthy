@@ -44,5 +44,4 @@ COPY --from=alpine /zoneinfo.zip /
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 # the main program:
 COPY --from=builder /go/bin/healthy ./healthy
-COPY --from=builder /go/src/github.com/spyzhov/healthy/example.yaml ./example.yaml
 CMD ["./healthy", "--web"]
