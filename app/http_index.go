@@ -17,10 +17,7 @@ type IndexContext struct {
 
 func (app *Application) httpIndex(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet || r.RequestURI != "/" {
-		w.WriteHeader(http.StatusNotFound)
-		if _, err := fmt.Fprint(w, "Not found"); err != nil {
-			app.Logger.Warn("error on write response", zap.Error(err))
-		}
+		app.httpPublic(w, r)
 		return
 	}
 	err := app.templates["index"].ExecuteTemplate(w, "index", &IndexContext{

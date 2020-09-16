@@ -21,8 +21,8 @@ func (app *Application) init() (err error) {
 	if err = app.setTemplates(); err != nil {
 		return safe.Wrap(err, "cannot initialize http/templates")
 	}
-	if err = app.setFavicon(); err != nil {
-		return safe.Wrap(err, "cannot initialize favicon.ico")
+	if err = app.setPublic(); err != nil {
+		return safe.Wrap(err, "cannot initialize public data")
 	}
 	if err = app.setHttpRoutes(); err != nil {
 		return safe.Wrap(err, "cannot initialize http/rotes")

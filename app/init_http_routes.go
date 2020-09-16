@@ -10,7 +10,6 @@ func (app *Application) setHttpRoutes() error {
 	// region HTTP
 	app.Http.Handle("/", handler.LoggedHandlerFunc(app.httpIndex))
 	app.Http.Handle("/validate", handler.LoggedHandlerFunc(app.httpValidate))
-	app.Http.Handle("/favicon.ico", handler.LoggedHandlerFunc(app.httpFavicon))
 	//endregion
 	// region Management
 	app.Management.Handle("/health", handler.LoggedHandlerFunc(app.httpHealthCheck))

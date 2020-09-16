@@ -36,7 +36,7 @@ type Application struct {
 	Http       *http.ServeMux
 	Management *http.ServeMux
 	templates  map[string]*template.Template
-	favicon    []byte
+	files      map[string]*publicFile
 	// endregion
 	// region Cli
 	Status int
